@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -119,6 +120,20 @@ fun ProfileScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { viewModel.syncData() },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Icon(Icons.Default.Refresh, contentDescription = null)
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(if(uiState.isSyncing) "Sincronizando..." else "Sincronizar a la Nube")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = uiState.syncStatus, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = onNavigateToSettings,

@@ -1,10 +1,14 @@
 package com.undef.gestionpedidos.ui.feature.newclient
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.undef.gestionpedidos.di.ServiceLocator
+import com.undef.gestionpedidos.domain.model.Cliente
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class NewClientUiState(
     val razonSocial: String = "",
@@ -25,6 +29,11 @@ class NewClientViewModel : ViewModel() {
 
     fun updateCuit(newValue: String) {
         _uiState.update { it.copy(cuit = newValue) }
+        // Auto-fetch si el CUIT tiene longitud de 11 (ejemplo: 20111111112)
+        val cleanCuit = newValue.replace("-", "")
+        if (cleanCuit.length == 11) {
+            fetchCuitInfo(cleanCuit)
+        }
     }
 
     fun updateDireccion(newValue: String) {
@@ -43,13 +52,22 @@ class NewClientViewModel : ViewModel() {
         _uiState.update { it.copy(email = newValue) }
     }
 
+    private fun fetchCuitInfo(cuit: String) {
+        viewModelScope.launch {
+            val result = ServiceLocator.clientRepository.fetchCuitData(cuit)
+            _uiState.update { it.copy(razonSocial = result) }
+        }
+    }
+
     fun saveClient(): Boolean {
         val state = _uiState.value
-        // Basic validation
         if (state.razonSocial.isBlank() || state.cuit.isBlank()) {
             return false
         }
-        // TODO: Persist logic here in the future
+        viewModelScope.launch {
+            val cliente = Cliente(0, state.razonSocial, state.cuit, state.direccion, state.localidad, state.telefono, state.email)
+            ServiceLocator.clientRepository.addClient(cliente)
+        }
         return true
     }
 }

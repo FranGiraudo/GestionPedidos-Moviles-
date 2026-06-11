@@ -45,7 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.undef.gestionpedidos.data.mock.MockData
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,7 +112,7 @@ fun NewOrderScreen(
                             expanded = uiState.expandedClientMenu,
                             onDismissRequest = { viewModel.updateExpandedClientMenu(false) }
                         ) {
-                            MockData.clientes.filter { it.activo }.forEach { cliente ->
+                            uiState.availableClients.forEach { cliente ->
                                 DropdownMenuItem(
                                     text = { Text(cliente.razonSocial) },
                                     onClick = { viewModel.updateSelectedClient(cliente) }
@@ -161,7 +161,7 @@ fun NewOrderScreen(
                             expanded = uiState.expandedProductMenu,
                             onDismissRequest = { viewModel.updateExpandedProductMenu(false) }
                         ) {
-                            MockData.productos.filter { it.activo }.forEach { producto ->
+                            uiState.availableProducts.forEach { producto ->
                                 DropdownMenuItem(
                                     text = { Text("${producto.descripcion} ($${producto.precioUnitario})") },
                                     onClick = { viewModel.updateSelectedProduct(producto) }
@@ -291,8 +291,9 @@ fun NewOrderScreen(
 
             Button(
                 onClick = {
-                    // TODO: Guardar pedido en la base de datos local (Room)
-                    onNavigateBack()
+                    if (viewModel.saveOrder()) {
+                        onNavigateBack()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

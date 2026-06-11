@@ -2,7 +2,9 @@ package com.undef.gestionpedidos.ui.feature.orderdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.viewModelScope
+import com.undef.gestionpedidos.di.ServiceLocator
+import kotlinx.coroutines.launch
 import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,7 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class OrderDetailUiState(
     val order: Pedido? = null,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val error: String? = null
 )
 
 class OrderDetailViewModel(private val orderId: Int) : ViewModel() {
@@ -22,8 +25,14 @@ class OrderDetailViewModel(private val orderId: Int) : ViewModel() {
     }
 
     private fun loadOrder() {
-        val order = MockData.pedidos.find { it.id == orderId }
-        _uiState.value = OrderDetailUiState(order = order, isLoading = false)
+        viewModelScope.launch {
+            val order = ServiceLocator.orderRepository.getOrderById(orderId)
+            if (order != null) {
+                _uiState.value = OrderDetailUiState(order = order, isLoading = false)
+            } else {
+                _uiState.value = OrderDetailUiState(isLoading = false, error = "Pedido no encontrado")
+            }
+        }
     }
 }
 

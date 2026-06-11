@@ -1,16 +1,23 @@
 package com.undef.gestionpedidos.ui.feature.neworder
 
 import androidx.lifecycle.ViewModel
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.viewModelScope
+import com.undef.gestionpedidos.di.ServiceLocator
 import com.undef.gestionpedidos.domain.model.Cliente
+import com.undef.gestionpedidos.domain.model.EstadoPedido
 import com.undef.gestionpedidos.domain.model.LineaPedido
+import com.undef.gestionpedidos.domain.model.Pedido
 import com.undef.gestionpedidos.domain.model.Producto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 data class NewOrderUiState(
+    val availableClients: List<Cliente> = emptyList(),
+    val availableProducts: List<Producto> = emptyList(),
     val expandedClientMenu: Boolean = false,
     val selectedClient: Cliente? = null,
     val observaciones: String = "",
@@ -24,6 +31,21 @@ data class NewOrderUiState(
 class NewOrderViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NewOrderUiState())
     val uiState: StateFlow<NewOrderUiState> = _uiState.asStateFlow()
+
+    init {
+        loadData()
+    }
+
+    private fun loadData() {
+        viewModelScope.launch {
+            val clients = ServiceLocator.clientRepository.getAllClients()
+            val products = ServiceLocator.productRepository.getAllProducts()
+            _uiState.update { it.copy(
+                availableClients = clients.filter { c -> c.activo },
+                availableProducts = products.filter { p -> p.activo }
+            ) }
+        }
+    }
 
     fun updateExpandedClientMenu(expanded: Boolean) {
         _uiState.update { it.copy(expandedClientMenu = expanded) }
@@ -94,5 +116,27 @@ class NewOrderViewModel : ViewModel() {
         updatedLines.remove(linea)
         val newTotal = updatedLines.sumOf { it.subtotal }
         _uiState.update { it.copy(orderLines = updatedLines, total = newTotal) }
+    }
+
+    fun saveOrder(): Boolean {
+        val state = _uiState.value
+        if (state.selectedClient == null || state.orderLines.isEmpty()) {
+            return false
+        }
+        
+        viewModelScope.launch {
+            val order = Pedido(
+                id = 0,
+                numeroPedido = "PED-${System.currentTimeMillis().toString().takeLast(5)}",
+                cliente = state.selectedClient,
+                fechaCreacion = LocalDate.now(),
+                fechaEntregaEstimada = LocalDate.now().plusDays(1),
+                estado = EstadoPedido.BORRADOR,
+                lineas = state.orderLines,
+                observaciones = state.observaciones
+            )
+            ServiceLocator.orderRepository.saveOrder(order)
+        }
+        return true
     }
 }

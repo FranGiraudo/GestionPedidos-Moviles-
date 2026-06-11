@@ -1,11 +1,14 @@
 package com.undef.gestionpedidos.ui.feature.dashboard
 
 import androidx.lifecycle.ViewModel
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.viewModelScope
+import com.undef.gestionpedidos.di.ServiceLocator
+import com.undef.gestionpedidos.domain.model.EstadoPedido
 import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 data class DashboardUiState(
     val pedidosRecientes: List<Pedido> = emptyList(),
@@ -22,11 +25,18 @@ class DashboardViewModel : ViewModel() {
     }
 
     private fun loadData() {
-        // Todo: Replace with real repository logic
-        _uiState.value = DashboardUiState(
-            pedidosRecientes = MockData.pedidos,
-            totalVentasDia = "125,000",
-            pedidosPendientes = 3
-        )
+        viewModelScope.launch {
+            val pedidos = ServiceLocator.orderRepository.getAllOrders()
+            val dolares = ServiceLocator.financeRepository.getDolarBlue()
+            
+            val pendientes = pedidos.count { it.estado == EstadoPedido.BORRADOR }
+            val recientes = pedidos.take(5)
+            
+            _uiState.value = DashboardUiState(
+                pedidosRecientes = recientes,
+                totalVentasDia = "$dolares", // Mostramos el dlar azul aqu como demo
+                pedidosPendientes = pendientes
+            )
+        }
     }
 }
