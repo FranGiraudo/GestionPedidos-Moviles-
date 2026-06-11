@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -80,7 +81,7 @@ fun AppNavHost() {
                             val isSelected = currentRoute == route
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.androidx.compose.ui.draw.clip(RoundedCornerShape(24.dp)).clickable {
+                                modifier = Modifier.clip(RoundedCornerShape(24.dp)).clickable {
                                     navController.navigate(route) {
                                         popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                         launchSingleTop = true
