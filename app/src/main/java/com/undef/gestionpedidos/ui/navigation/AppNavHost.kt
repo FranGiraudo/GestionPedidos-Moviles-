@@ -80,7 +80,7 @@ fun AppNavHost() {
                             val isSelected = currentRoute == route
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.androidx.compose.ui.draw.clip(RoundedCornerShape(24.dp)).clickable {
                                     navController.navigate(route) {
                                         popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                         launchSingleTop = true
