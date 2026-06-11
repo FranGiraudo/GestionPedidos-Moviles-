@@ -2,41 +2,35 @@ package com.undef.gestionpedidos.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primary brand — Modern Indigo / SaaS Blue
-val Primary900 = Color(0xFF1E1E2C)
-val Primary800 = Color(0xFF232536)
-val Primary700 = Color(0xFF2E3246)
-val Primary600 = Color(0xFF3F4660)
-val Primary500 = Color(0xFF4F46E5) // Sleek Indigo
-val Primary400 = Color(0xFF6366F1)
-val Primary100 = Color(0xFFE0E7FF)
-val Primary50  = Color(0xFFEEF2FF)
+// Fondo principal crema
+val BackgroundCream = Color(0xFFFAF7F2)
 
-// Accent — Coral / Vibrant Orange (for CTAs)
-val Accent600 = Color(0xFFEA580C)
-val Accent500 = Color(0xFFF97316)
-val Accent400 = Color(0xFFFB923C)
-val Accent100 = Color(0xFFFFEDD5)
+// Colores principales
+val DarkBlue = Color(0xFF2B4365)
+val Lavender = Color(0xFFE9E1F7)
+val PurpleMain = Color(0xFF5B45C4)
 
-// Semantics
-val Success700  = Color(0xFF047857)
-val Success500  = Color(0xFF10B981)
-val Success100  = Color(0xFFD1FAE5)
+// Estados de Pedido (Pills)
+val StatusGreenBg = Color(0xFFC6F6D5)
+val StatusGreenText = Color(0xFF22543D)
 
-val Error700    = Color(0xFFB91C1C)
-val Error500    = Color(0xFFEF4444)
-val Error100    = Color(0xFFFEE2E2)
+val StatusPurpleBg = Color(0xFFE9D8FD)
+val StatusPurpleText = Color(0xFF44337A)
 
-val Warning700  = Color(0xFFB45309)
-val Warning500  = Color(0xFFF59E0B)
-val Warning100  = Color(0xFFFEF3C7)
+val StatusOrangeBg = Color(0xFFFEEBC8)
+val StatusOrangeText = Color(0xFF7B341E)
 
-// Neutrals
-val Slate900 = Color(0xFF0F172A)
-val Slate800 = Color(0xFF1E293B)
-val Slate700 = Color(0xFF334155)
-val Slate500 = Color(0xFF64748B)
-val Slate300 = Color(0xFFCBD5E1)
-val Slate100 = Color(0xFFF1F5F9)
-val Slate50  = Color(0xFFF8FAFC)
-val White    = Color(0xFFFFFFFF)
+val StatusGrayBg = Color(0xFFEDF2F7)
+val StatusGrayText = Color(0xFF4A5568)
+
+// Componentes
+val BottomNavBg = Color(0xFFF3EFFF) // Suave lila
+val BottomNavSelected = Color(0xFFE0D4F5)
+val BottomNavIconActive = Color(0xFF4C3B8D)
+
+val AvatarBg = Color(0xFFE2E8F0)
+val AvatarText = Color(0xFF4A5568)
+
+val CardSurface = Color(0xFFFFFFFF)
+val TextPrimary = Color(0xFF1A202C)
+val TextSecondary = Color(0xFF718096)

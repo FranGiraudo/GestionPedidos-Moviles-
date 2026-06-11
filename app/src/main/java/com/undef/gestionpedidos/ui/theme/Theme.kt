@@ -11,70 +11,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val LightColorScheme = lightColorScheme(
-    primary          = Primary500,
-    onPrimary        = White,
-    primaryContainer = Primary100,
-    onPrimaryContainer = Primary900,
+    primary          = PurpleMain,
+    onPrimary        = CardSurface,
+    primaryContainer = Lavender,
+    onPrimaryContainer = DarkBlue,
 
-    secondary        = Accent500,
-    onSecondary      = White,
-    secondaryContainer = Accent100,
-    onSecondaryContainer = Primary900,
+    secondary        = DarkBlue,
+    onSecondary      = CardSurface,
 
-    tertiary         = Success500,
-    onTertiary       = White,
-    tertiaryContainer = Success100,
-    onTertiaryContainer = Slate900,
+    background       = BackgroundCream,
+    onBackground     = TextPrimary,
 
-    background       = Slate50,
-    onBackground     = Slate900,
-
-    surface          = White,
-    onSurface        = Slate900,
-    surfaceVariant   = Slate100,
-    onSurfaceVariant = Slate700,
-
-    outline          = Slate300,
-    outlineVariant   = Slate100,
-
-    error            = Error500,
-    onError          = White,
-    errorContainer   = Error100,
-    onErrorContainer = Slate900
+    surface          = CardSurface,
+    onSurface        = TextPrimary,
+    surfaceVariant   = AvatarBg,
+    onSurfaceVariant = TextSecondary,
 )
 
-private val DarkColorScheme = darkColorScheme(
-    primary          = Primary400,
-    onPrimary        = Slate900,
-    primaryContainer = Primary800,
-    onPrimaryContainer = Primary100,
-
-    secondary        = Accent400,
-    onSecondary      = Slate900,
-    secondaryContainer = Accent600,
-    onSecondaryContainer = White,
-
-    tertiary         = Success100,
-    onTertiary       = Success700,
-    tertiaryContainer = Success700,
-    onTertiaryContainer = Success100,
-
-    background       = Slate900,
-    onBackground     = Slate100,
-
-    surface          = Slate800,
-    onSurface        = Slate100,
-    surfaceVariant   = Primary700,
-    onSurfaceVariant = Slate300,
-
-    outline          = Slate500,
-    outlineVariant   = Slate700,
-
-    error            = Error100,
-    onError          = Error700,
-    errorContainer   = Error700,
-    onErrorContainer = Error100
-)
+// No dark mode needed specifically for this mockup, fallback to light
+private val DarkColorScheme = LightColorScheme
 
 @Composable
 fun GestionPedidosTheme(
@@ -82,15 +37,8 @@ fun GestionPedidosTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context)
-            else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else      -> LightColorScheme
-    }
+    // Forzamos el esquema claro para mantener la estética del mockup siempre
+    val colorScheme = LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

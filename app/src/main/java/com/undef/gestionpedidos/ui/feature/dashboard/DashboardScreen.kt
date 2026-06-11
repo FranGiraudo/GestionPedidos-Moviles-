@@ -86,11 +86,15 @@ fun DashboardScreen(
             SummaryCard(
                 title = "Ventas del Mes",
                 value = "$ 1.250.000",
+                bgColor = com.undef.gestionpedidos.ui.theme.DarkBlue,
+                fgColor = androidx.compose.ui.graphics.Color.White,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
                 title = "Pedidos Hoy",
                 value = "12",
+                bgColor = com.undef.gestionpedidos.ui.theme.Lavender,
+                fgColor = com.undef.gestionpedidos.ui.theme.DarkBlue,
                 modifier = Modifier.weight(1f)
             )
         }
