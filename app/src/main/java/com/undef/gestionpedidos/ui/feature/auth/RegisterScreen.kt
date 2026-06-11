@@ -21,13 +21,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(onNavigateBack: () -> Unit) {
+fun RegisterScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: RegisterViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -61,35 +70,48 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            if (uiState.error != null) {
+                Text(text = uiState.error!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.nombreCompleto,
+                onValueChange = { viewModel.updateNombreCompleto(it) },
                 label = { Text("Nombre Completo") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = uiState.error != null
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.email,
+                onValueChange = { viewModel.updateEmail(it) },
                 label = { Text("Correo Electrónico") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = uiState.error != null
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.contrasena,
+                onValueChange = { viewModel.updateContrasena(it) },
                 label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth()
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                isError = uiState.error != null
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = onNavigateBack,
+                onClick = {
+                    if (viewModel.register()) {
+                        onNavigateBack()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

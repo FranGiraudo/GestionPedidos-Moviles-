@@ -31,15 +31,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 import com.undef.gestionpedidos.domain.model.Cliente
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClientsScreen(
-    onNavigateToNewClient: () -> Unit
+    onNavigateToNewClient: () -> Unit,
+    viewModel: ClientsViewModel = viewModel()
 ) {
-    val clients = MockData.clientes
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val clients = uiState.clients
 
     Scaffold(
         topBar = {

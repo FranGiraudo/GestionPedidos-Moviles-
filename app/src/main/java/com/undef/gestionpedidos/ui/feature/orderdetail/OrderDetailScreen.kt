@@ -44,7 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 import com.undef.gestionpedidos.domain.model.EstadoPedido
 import com.undef.gestionpedidos.domain.model.LineaPedido
 
@@ -52,8 +54,11 @@ import com.undef.gestionpedidos.domain.model.LineaPedido
 @Composable
 fun OrderDetailScreen(
     orderId: Int,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: OrderDetailViewModel = viewModel(factory = OrderDetailViewModelFactory(orderId))
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val order = uiState.order
     val pedidoOriginal = MockData.pedidos.find { it.id == orderId }
     val context = LocalContext.current
 

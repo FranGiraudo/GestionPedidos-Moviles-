@@ -31,19 +31,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: SettingsViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     // Estados mockeados para la UI
     var expandedThemeMenu by remember { mutableStateOf(false) }
     val themeOptions = listOf("Sistema", "Modo Claro", "Modo Oscuro", "Empresa A (Azul)", "Empresa B (Verde)")
     var selectedTheme by remember { mutableStateOf(themeOptions[0]) }
 
-    var notificaciones by remember { mutableStateOf(true) }
-    var sonidos by remember { mutableStateOf(true) }
+        var sonidos by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -129,8 +133,8 @@ fun SettingsScreen(
                 ) {
                     Text("Notificaciones Push", style = MaterialTheme.typography.bodyLarge)
                     Switch(
-                        checked = notificaciones,
-                        onCheckedChange = { notificaciones = it }
+                        checked = uiState.notificacionesActivas,
+                        onCheckedChange = { viewModel.toggleNotificaciones(it) }
                     )
                 }
 

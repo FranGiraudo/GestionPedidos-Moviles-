@@ -29,7 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 import com.undef.gestionpedidos.domain.model.Pedido
 import java.time.format.DateTimeFormatter
 
@@ -37,9 +39,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun OrdersScreen(
     onNavigateToNewOrder: () -> Unit,
-    onNavigateToOrderDetail: (Int) -> Unit
+    onNavigateToOrderDetail: (Int) -> Unit,
+    viewModel: OrdersViewModel = viewModel()
 ) {
-    val orders = MockData.pedidos
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val orders = uiState.orders
 
     Scaffold(
         topBar = {

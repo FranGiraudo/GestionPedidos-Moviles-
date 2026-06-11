@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.undef.gestionpedidos.data.mock.MockData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 import com.undef.gestionpedidos.domain.model.Pedido
 
 @Composable
@@ -36,9 +38,11 @@ fun DashboardScreen(
     onNavigateToNewOrder: () -> Unit,
     onNavigateToNewClient: () -> Unit,
     onNavigateToOrderDetail: (Int) -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    viewModel: DashboardViewModel = viewModel()
 ) {
-    val recentOrders = MockData.pedidos.take(3)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val recentOrders = uiState.pedidosRecientes.take(3)
 
     Column(
         modifier = Modifier

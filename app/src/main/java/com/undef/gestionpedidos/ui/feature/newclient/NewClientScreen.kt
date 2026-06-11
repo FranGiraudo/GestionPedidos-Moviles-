@@ -24,23 +24,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewClientScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: NewClientViewModel = viewModel()
 ) {
-    var razonSocial by remember { mutableStateOf("") }
-    var cuit by remember { mutableStateOf("") }
-    var direccion by remember { mutableStateOf("") }
-    var localidad by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -68,43 +63,43 @@ fun NewClientScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(
-                value = razonSocial,
-                onValueChange = { razonSocial = it },
+                value = uiState.razonSocial,
+                onValueChange = { viewModel.updateRazonSocial(it) },
                 label = { Text("Razon Social / Nombre") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = cuit,
-                onValueChange = { cuit = it },
+                value = uiState.cuit,
+                onValueChange = { viewModel.updateCuit(it) },
                 label = { Text("CUIT / DNI") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = direccion,
-                onValueChange = { direccion = it },
+                value = uiState.direccion,
+                onValueChange = { viewModel.updateDireccion(it) },
                 label = { Text("Direccion") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = localidad,
-                onValueChange = { localidad = it },
+                value = uiState.localidad,
+                onValueChange = { viewModel.updateLocalidad(it) },
                 label = { Text("Localidad") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = telefono,
-                onValueChange = { telefono = it },
+                value = uiState.telefono,
+                onValueChange = { viewModel.updateTelefono(it) },
                 label = { Text("Telefono") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = uiState.email,
+                onValueChange = { viewModel.updateEmail(it) },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -113,8 +108,9 @@ fun NewClientScreen(
 
             Button(
                 onClick = {
-                    // TODO: Guardar logica aca
-                    onNavigateBack()
+                    if (viewModel.saveClient()) {
+                        onNavigateBack()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
