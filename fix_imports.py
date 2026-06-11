@@ -1,36 +1,35 @@
 import os
 import re
 
-def update_file(path, replacements):
-    with open(path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    for old, new in replacements:
-        content = re.sub(old, new, content)
+def update_file(path):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            content = f.read()
         
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(content)
+        # Add CardDefaults if not present
+        if 'import androidx.compose.material3.CardDefaults' not in content:
+            content = content.replace('import androidx.compose.runtime.Composable', 'import androidx.compose.runtime.Composable\nimport androidx.compose.material3.CardDefaults')
+        
+        # Some screens might use ElevatedCardDefaults if AI hallucinated it, fix that too
+        content = content.replace('ElevatedCardDefaults', 'CardDefaults')
 
-# DASHBOARD
-update_file('app/src/main/java/com/undef/gestionpedidos/ui/feature/dashboard/DashboardScreen.kt', [
-    (r'import androidx.compose.runtime.getValue', r'import androidx.compose.runtime.getValue\nimport com.undef.gestionpedidos.ui.components.SummaryCard\nimport com.undef.gestionpedidos.ui.components.RecentOrderCard')
-])
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"Fixed {path}")
+    except Exception as e:
+        print(f"Error reading/writing {path}: {e}")
 
-# ORDERS
-update_file('app/src/main/java/com/undef/gestionpedidos/ui/feature/orders/OrdersScreen.kt', [
-    (r'import androidx.compose.runtime.getValue', r'import androidx.compose.runtime.getValue\nimport com.undef.gestionpedidos.ui.components.OrderHistoryCard')
-])
+screens = [
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/profile/ProfileScreen.kt',
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/settings/SettingsScreen.kt',
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/statistics/StatisticsScreen.kt',
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/neworder/NewOrderScreen.kt',
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/newclient/NewClientScreen.kt',
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/orderdetail/OrderDetailScreen.kt',
+    'app/src/main/java/com/undef/gestionpedidos/ui/feature/clients/ClientsScreen.kt'
+]
 
-# PROFILE
-update_file('app/src/main/java/com/undef/gestionpedidos/ui/feature/profile/ProfileScreen.kt', [
-    (r'import androidx.compose.runtime.getValue', r'import androidx.compose.runtime.getValue\nimport com.undef.gestionpedidos.ui.components.ProfileInfoRow')
-])
-
-# ORDER DETAIL
-update_file('app/src/main/java/com/undef/gestionpedidos/ui/feature/orderdetail/OrderDetailScreen.kt', [
-    (r'val pedidoOriginal = MockData\.pedidos\.find \{ it\.id == orderId \}', ''),
-    (r'pedidoOriginal', 'order'),
-    (r'items\(order\.lineas\)', r'items(order?.lineas ?: emptyList())')
-])
+for screen in screens:
+    update_file(screen)
 
 print("Finished fixing imports")
