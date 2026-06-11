@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -55,8 +56,8 @@ fun DashboardScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = "Hola, Distribuidor", style = MaterialTheme.typography.headlineMedium)
-                Text(text = "Resumen del dia", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_hola_distribuidor), style = MaterialTheme.typography.headlineMedium)
+                Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_resumen_del_dia), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Surface(
                 shape = RoundedCornerShape(50),
@@ -107,7 +108,7 @@ fun DashboardScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(modifier = Modifier.size(8.dp))
-                Text("Nuevo Pedido")
+                Text(stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_pedido))
             }
             Button(
                 onClick = onNavigateToNewClient,
@@ -118,14 +119,14 @@ fun DashboardScreen(
             ) {
                 Icon(Icons.Default.Person, contentDescription = null)
                 Spacer(modifier = Modifier.size(8.dp))
-                Text("Nuevo Cliente")
+                Text(stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_cliente))
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Ultimos Movimientos",
+            text = stringResource(com.undef.gestionpedidos.R.string.txt_ultimos_movimientos),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )

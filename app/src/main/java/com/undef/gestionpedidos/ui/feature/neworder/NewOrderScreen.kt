@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +57,7 @@ fun NewOrderScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo Pedido") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_pedido)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -90,7 +91,7 @@ fun NewOrderScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(text = "Datos del Cliente", style = MaterialTheme.typography.titleMedium)
+                    Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_datos_del_cliente), style = MaterialTheme.typography.titleMedium)
 
                     ExposedDropdownMenuBox(
                         expanded = uiState.expandedClientMenu,
@@ -100,7 +101,7 @@ fun NewOrderScreen(
                             value = uiState.selectedClient?.razonSocial ?: "Seleccione un cliente",
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Cliente") },
+                            label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_cliente)) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = uiState.expandedClientMenu) },
                             modifier = Modifier
                                 .menuAnchor()
@@ -122,7 +123,7 @@ fun NewOrderScreen(
                     OutlinedTextField(
                         value = uiState.observaciones,
                         onValueChange = { viewModel.updateObservaciones(it) },
-                        label = { Text("Observaciones (opcional)") },
+                        label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_observaciones_opcion)) },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2
                     )
@@ -139,7 +140,7 @@ fun NewOrderScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(text = "Agregar Producto", style = MaterialTheme.typography.titleMedium)
+                    Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_agregar_producto), style = MaterialTheme.typography.titleMedium)
 
                     ExposedDropdownMenuBox(
                         expanded = uiState.expandedProductMenu,
@@ -149,7 +150,7 @@ fun NewOrderScreen(
                             value = uiState.selectedProduct?.descripcion ?: "Seleccione un producto",
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Producto") },
+                            label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_producto)) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = uiState.expandedProductMenu) },
                             modifier = Modifier
                                 .menuAnchor()
@@ -176,7 +177,7 @@ fun NewOrderScreen(
                         OutlinedTextField(
                             value = uiState.quantityText,
                             onValueChange = { viewModel.updateQuantityText(it) },
-                            label = { Text("Cant.") },
+                            label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_cant)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.weight(0.3f)
                         )
@@ -191,7 +192,7 @@ fun NewOrderScreen(
                         ) {
                             Icon(Icons.Default.ShoppingCart, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Agregar")
+                            Text(stringResource(com.undef.gestionpedidos.R.string.txt_agregar))
                         }
                     }
                 }
@@ -199,14 +200,14 @@ fun NewOrderScreen(
 
             // SECCION 3: Resumen del Pedido
             Text(
-                text = "Resumen del Pedido",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_resumen_del_pedido),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             if (uiState.orderLines.isEmpty()) {
                 Text(
-                    text = "Aun no se agregaron productos.",
+                    text = stringResource(com.undef.gestionpedidos.R.string.txt_aun_no_se_agregaron_),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 16.dp)
@@ -272,7 +273,7 @@ fun NewOrderScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Total a pagar:",
+                        text = stringResource(com.undef.gestionpedidos.R.string.txt_total_a_pagar),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )

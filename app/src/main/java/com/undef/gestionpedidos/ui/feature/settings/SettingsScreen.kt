@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +53,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Configuracion") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_configuracion)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -76,7 +77,7 @@ fun SettingsScreen(
             // SECCION: Apariencia
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = "Apariencia",
+                    text = stringResource(com.undef.gestionpedidos.R.string.txt_apariencia),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -89,7 +90,7 @@ fun SettingsScreen(
                         value = selectedTheme,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Tema de la Aplicacion") },
+                        label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_tema_de_la_aplicacio)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedThemeMenu) },
                         modifier = Modifier.menuAnchor().fillMaxWidth()
                     )
@@ -110,7 +111,7 @@ fun SettingsScreen(
                     }
                 }
                 Text(
-                    text = "El cambio visual se aplicara cuando conectemos DataStore.",
+                    text = stringResource(com.undef.gestionpedidos.R.string.txt_el_cambio_visual_se_),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -121,7 +122,7 @@ fun SettingsScreen(
             // SECCION: Preferencias
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
-                    text = "Preferencias",
+                    text = stringResource(com.undef.gestionpedidos.R.string.txt_preferencias),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -158,8 +159,8 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Gestion de Pedidos v1.0", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Trabajo Practico Integrador", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_gestion_de_pedidos_v), style = MaterialTheme.typography.bodyMedium)
+                Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_trabajo_practico_int), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

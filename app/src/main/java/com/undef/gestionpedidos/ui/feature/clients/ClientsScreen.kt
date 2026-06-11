@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ fun ClientsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Gestion de Clientes") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_gestion_de_clientes)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -110,7 +111,7 @@ fun ClientCard(client: Cliente) {
                 )
                 if (!client.activo) {
                     Text(
-                        text = "Inactivo",
+                        text = stringResource(com.undef.gestionpedidos.R.string.txt_inactivo),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.error
                     )

@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ fun NewClientScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo Cliente") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_cliente)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -65,42 +66,42 @@ fun NewClientScreen(
             OutlinedTextField(
                 value = uiState.razonSocial,
                 onValueChange = { viewModel.updateRazonSocial(it) },
-                label = { Text("Razon Social / Nombre") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_razon_social_nombre)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = uiState.cuit,
                 onValueChange = { viewModel.updateCuit(it) },
-                label = { Text("CUIT / DNI") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_cuit_dni)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = uiState.direccion,
                 onValueChange = { viewModel.updateDireccion(it) },
-                label = { Text("Direccion") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_direccion)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = uiState.localidad,
                 onValueChange = { viewModel.updateLocalidad(it) },
-                label = { Text("Localidad") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_localidad)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = uiState.telefono,
                 onValueChange = { viewModel.updateTelefono(it) },
-                label = { Text("Telefono") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_telefono)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = uiState.email,
                 onValueChange = { viewModel.updateEmail(it) },
-                label = { Text("Email") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_email)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -116,7 +117,7 @@ fun NewClientScreen(
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text("Guardar Cliente")
+                Text(stringResource(com.undef.gestionpedidos.R.string.txt_guardar_cliente))
             }
         }
     }

@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +50,7 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mi Perfil") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_mi_perfil)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -88,12 +89,12 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Distribuidor Demo",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_distribuidor_demo),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "distribuidor@demo.com",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_distribuidor_demo_co),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -106,7 +107,7 @@ fun ProfileScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Informacion de la cuenta", style = MaterialTheme.typography.titleMedium)
+                    Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_informacion_de_la_cu), style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(16.dp))
 
                     ProfileInfoRow(label = "Rol", value = "Administrador")
@@ -124,7 +125,7 @@ fun ProfileScreen(
             ) {
                 Icon(Icons.Default.Settings, contentDescription = null)
                 Spacer(modifier = Modifier.size(8.dp))
-                Text("Configuracion")
+                Text(stringResource(com.undef.gestionpedidos.R.string.txt_configuracion))
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -139,7 +140,7 @@ fun ProfileScreen(
             ) {
                 Icon(Icons.Default.ExitToApp, contentDescription = null)
                 Spacer(modifier = Modifier.size(8.dp))
-                Text("Cerrar Sesion")
+                Text(stringResource(com.undef.gestionpedidos.R.string.txt_cerrar_sesion))
             }
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -37,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,7 +79,7 @@ fun OrderDetailScreen(
             TopAppBar(
                 title = {
                     if (modoEdicion) {
-                        Text("Editando pedido")
+                        Text(stringResource(com.undef.gestionpedidos.R.string.txt_editando_pedido))
                     } else {
                         Text(numeroPedido.ifEmpty { "Error" })
                     }
@@ -156,7 +157,7 @@ fun OrderDetailScreen(
     ) { paddingValues ->
         if (pedidoOriginal == null) {
             Text(
-                text = "Pedido no encontrado",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_pedido_no_encontrado),
                 modifier = Modifier.padding(paddingValues).padding(16.dp),
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -174,7 +175,7 @@ fun OrderDetailScreen(
                 OutlinedTextField(
                     value = clienteRazonSocial,
                     onValueChange = { clienteRazonSocial = it },
-                    label = { Text("Cliente") },
+                    label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_cliente)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -196,7 +197,7 @@ fun OrderDetailScreen(
                         value = estadoSeleccionado.etiqueta,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Estado") },
+                        label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_estado)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropdownExpandido) },
                         modifier = Modifier.fillMaxWidth().menuAnchor()
                     )
@@ -229,7 +230,7 @@ fun OrderDetailScreen(
                 OutlinedTextField(
                     value = numeroPedido,
                     onValueChange = { numeroPedido = it },
-                    label = { Text("Número de Pedido") },
+                    label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_n_mero_de_pedido)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -239,7 +240,7 @@ fun OrderDetailScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Productos",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_productos),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -266,7 +267,7 @@ fun OrderDetailScreen(
                         onValueChange = { nuevoValor ->
                             total = nuevoValor.toDoubleOrNull() ?: 0.0
                         },
-                        label = { Text("Total") },
+                        label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_total)) },
                         modifier = Modifier.weight(1f),
                         singleLine = true
                     )
@@ -289,7 +290,7 @@ fun OrderDetailScreen(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Eliminar"
                         )
-                        Text("Eliminar")
+                        Text(stringResource(com.undef.gestionpedidos.R.string.txt_eliminar))
                     }
                 }
             }
@@ -300,7 +301,7 @@ fun OrderDetailScreen(
     if (mostrarDialogoEliminar) {
         AlertDialog(
             onDismissRequest = { mostrarDialogoEliminar = false },
-            title = { Text("Eliminar Pedido") },
+            title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_eliminar_pedido)) },
             text = {
                 Text("¿Estás seguro de que deseas eliminar el pedido $numeroPedido?\n\nEsta acción no se puede deshacer.")
             },
@@ -316,7 +317,7 @@ fun OrderDetailScreen(
             },
             dismissButton = {
                 TextButton(onClick = { mostrarDialogoEliminar = false }) {
-                    Text("Cancelar")
+                    Text(stringResource(com.undef.gestionpedidos.R.string.txt_cancelar))
                 }
             }
         )

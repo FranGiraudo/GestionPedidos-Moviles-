@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +41,7 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Registro") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_registro)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -63,7 +64,7 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Crear Cuenta",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_crear_cuenta),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -78,7 +79,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.nombreCompleto,
                 onValueChange = { viewModel.updateNombreCompleto(it) },
-                label = { Text("Nombre Completo") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_nombre_completo)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = uiState.error != null
             )
@@ -88,7 +89,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.email,
                 onValueChange = { viewModel.updateEmail(it) },
-                label = { Text("Correo Electrónico") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_correo_electr_nico)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = uiState.error != null
             )
@@ -98,7 +99,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.contrasena,
                 onValueChange = { viewModel.updateContrasena(it) },
-                label = { Text("Contraseña") },
+                label = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_contrase_a)) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 isError = uiState.error != null

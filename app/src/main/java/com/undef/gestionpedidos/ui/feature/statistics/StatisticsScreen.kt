@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +37,7 @@ fun StatisticsScreen(viewModel: StatisticsViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Estadisticas de Ventas") },
+                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_estadisticas_de_vent)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -60,7 +61,7 @@ fun StatisticsScreen(viewModel: StatisticsViewModel = viewModel()) {
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(
-                        text = "Ventas Totales (Mes Actual)",
+                        text = stringResource(com.undef.gestionpedidos.R.string.txt_ventas_totales_mes_a),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -75,7 +76,7 @@ fun StatisticsScreen(viewModel: StatisticsViewModel = viewModel()) {
             }
 
             Text(
-                text = "Productos mas vendidos",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_productos_mas_vendid),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp)
