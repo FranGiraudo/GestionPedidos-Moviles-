@@ -60,15 +60,15 @@ fun OrderDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val order = uiState.order
-    val pedidoOriginal = MockData.pedidos.find { it.id == orderId }
+    
     val context = LocalContext.current
 
     // Estados para modo edición
     var modoEdicion by remember { mutableStateOf(false) }
-    var numeroPedido by remember(pedidoOriginal) { mutableStateOf(pedidoOriginal?.numeroPedido ?: "") }
-    var clienteRazonSocial by remember(pedidoOriginal) { mutableStateOf(pedidoOriginal?.cliente?.razonSocial ?: "") }
-    var estadoSeleccionado by remember(pedidoOriginal) { mutableStateOf(pedidoOriginal?.estado ?: EstadoPedido.BORRADOR) }
-    var total by remember(pedidoOriginal) { mutableStateOf(pedidoOriginal?.total ?: 0.0) }
+    var numeroPedido by remember(order) { mutableStateOf(order?.numeroPedido ?: "") }
+    var clienteRazonSocial by remember(order) { mutableStateOf(order?.cliente?.razonSocial ?: "") }
+    var estadoSeleccionado by remember(order) { mutableStateOf(order?.estado ?: EstadoPedido.BORRADOR) }
+    var total by remember(order) { mutableStateOf(order?.total ?: 0.0) }
 
     // Estados para diálogos
     var mostrarDialogoEliminar by remember { mutableStateOf(false) }
@@ -107,7 +107,7 @@ fun OrderDetailScreen(
                     }
                 },
                 actions = {
-                    if (pedidoOriginal != null) {
+                    if (order != null) {
                         if (modoEdicion) {
                             // Botón Guardar cambios
                             IconButton(onClick = {
@@ -155,7 +155,7 @@ fun OrderDetailScreen(
             )
         }
     ) { paddingValues ->
-        if (pedidoOriginal == null) {
+        if (order == null) {
             Text(
                 text = stringResource(com.undef.gestionpedidos.R.string.txt_pedido_no_encontrado),
                 modifier = Modifier.padding(paddingValues).padding(16.dp),
@@ -249,7 +249,7 @@ fun OrderDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                items(pedidoOriginal.lineas) { orderLine ->
+                items(order?.lineas ?: emptyList()) { orderLine ->
                     OrderLineItem(orderLine)
                 }
             }

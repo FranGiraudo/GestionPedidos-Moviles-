@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
+import com.undef.gestionpedidos.ui.components.ProfileInfoRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

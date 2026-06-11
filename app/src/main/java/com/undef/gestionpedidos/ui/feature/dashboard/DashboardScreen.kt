@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
+import com.undef.gestionpedidos.ui.components.SummaryCard
+import com.undef.gestionpedidos.ui.components.RecentOrderCard
 import com.undef.gestionpedidos.domain.model.Pedido
 
 @Composable
