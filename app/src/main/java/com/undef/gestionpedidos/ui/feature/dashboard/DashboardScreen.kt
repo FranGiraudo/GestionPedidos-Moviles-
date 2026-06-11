@@ -140,43 +140,4 @@ fun DashboardScreen(
     }
 }
 
-@Composable
-fun SummaryCard(title: String, value: String, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        }
-    }
-}
 
-@Composable
-fun RecentOrderCard(order: Pedido, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text(text = order.cliente.razonSocial, style = MaterialTheme.typography.titleMedium)
-                Text(text = order.estado.etiqueta, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.tertiary)
-            }
-            Text(text = "$${order.total}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.secondary)
-        }
-    }
-}

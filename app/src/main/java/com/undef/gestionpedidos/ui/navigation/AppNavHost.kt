@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.undef.gestionpedidos.ui.feature.auth.LoginScreen
+import com.undef.gestionpedidos.ui.feature.auth.RegisterScreen
 import com.undef.gestionpedidos.ui.feature.auth.SplashScreen
 import com.undef.gestionpedidos.ui.feature.clients.ClientsScreen
 import com.undef.gestionpedidos.ui.feature.dashboard.DashboardScreen
@@ -94,7 +95,16 @@ fun AppNavHost() {
                         navController.navigate(AppDestination.Dashboard.route) {
                             popUpTo(AppDestination.Login.route) { inclusive = true }
                         }
+                    },
+                    onNavigateToRegister = {
+                        navController.navigate(AppDestination.Register.route)
                     }
+                )
+            }
+
+            composable(AppDestination.Register.route) {
+                RegisterScreen(
+                    onNavigateBack = { navController.popBackStack() }
                 )
             }
 

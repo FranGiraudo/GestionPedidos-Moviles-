@@ -3,6 +3,7 @@ package com.undef.gestionpedidos.ui.navigation
 sealed class AppDestination(val route: String) {
     object Splash : AppDestination("splash")
     object Login : AppDestination("login")
+    object Register : AppDestination("register")
     object Dashboard : AppDestination("dashboard")
     object Orders : AppDestination("orders")
     object Clients : AppDestination("clients")

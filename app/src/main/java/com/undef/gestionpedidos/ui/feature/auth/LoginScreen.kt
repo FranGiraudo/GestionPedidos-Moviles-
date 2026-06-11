@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+    onNavigateToRegister: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -128,7 +129,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = { /* TODO: Navegar a pantalla de registro */ }) {
+            TextButton(onClick = onNavigateToRegister) {
                 Text(stringResource(com.undef.gestionpedidos.R.string.register_prompt))
             }
         }
