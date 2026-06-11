@@ -1,19 +1,28 @@
 package com.undef.gestionpedidos.ui.navigation
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -33,6 +42,9 @@ import com.undef.gestionpedidos.ui.feature.orders.OrdersScreen
 import com.undef.gestionpedidos.ui.feature.profile.ProfileScreen
 import com.undef.gestionpedidos.ui.feature.settings.SettingsScreen
 import com.undef.gestionpedidos.ui.feature.statistics.StatisticsScreen
+import com.undef.gestionpedidos.ui.theme.BottomNavBg
+import com.undef.gestionpedidos.ui.theme.BottomNavIconActive
+import com.undef.gestionpedidos.ui.theme.BottomNavSelected
 
 @Composable
 fun AppNavHost() {
@@ -50,25 +62,25 @@ fun AppNavHost() {
     val showBottomBar = bottomNavItems.any { it.first == currentRoute }
 
     Scaffold(
-        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {
-                androidx.compose.material3.Surface(
-                    color = com.undef.gestionpedidos.ui.theme.BottomNavBg,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(32.dp),
-                    modifier = Modifier.padding(16.dp).androidx.compose.foundation.layout.fillMaxWidth(),
+                Surface(
+                    color = BottomNavBg,
+                    shape = RoundedCornerShape(32.dp),
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
                     shadowElevation = 8.dp
                 ) {
-                    androidx.compose.foundation.layout.Row(
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).androidx.compose.foundation.layout.fillMaxWidth(),
-                        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         bottomNavItems.forEach { (route, title, icon) ->
                             val isSelected = currentRoute == route
-                            androidx.compose.foundation.layout.Column(
-                                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                                modifier = Modifier.androidx.compose.foundation.clickable {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.clickable {
                                     navController.navigate(route) {
                                         popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                         launchSingleTop = true
@@ -76,21 +88,21 @@ fun AppNavHost() {
                                     }
                                 }
                             ) {
-                                androidx.compose.material3.Surface(
-                                    color = if (isSelected) com.undef.gestionpedidos.ui.theme.BottomNavSelected else androidx.compose.ui.graphics.Color.Transparent,
-                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                                Surface(
+                                    color = if (isSelected) BottomNavSelected else Color.Transparent,
+                                    shape = RoundedCornerShape(16.dp)
                                 ) {
                                     Icon(
                                         imageVector = icon, 
                                         contentDescription = title,
-                                        tint = if (isSelected) com.undef.gestionpedidos.ui.theme.BottomNavIconActive else androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                                        tint = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
                                     )
                                 }
                                 Text(
                                     text = title, 
-                                    style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
-                                    color = if (isSelected) com.undef.gestionpedidos.ui.theme.BottomNavIconActive else androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
