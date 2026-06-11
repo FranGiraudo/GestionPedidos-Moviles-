@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">GestionPedidos</string>
+    <string name="app_name">Gestion de Pedidos</string>
+    <!-- Login -->
+    <string name="welcome">Bienvenido</string>
+    <string name="system_name">Sistema de Gestion de Pedidos</string>
+    <string name="email_label">Correo electronico</string>
+    <string name="password_label">Contrasena</string>
+    <string name="login_button">Iniciar Sesion</string>
+    <string name="register_prompt">No tenes cuenta? Registrate</string>
+    <string name="error_required_fields">Todos los campos son obligatorios</string>
+    <string name="error_invalid_email">El formato del email es invalido</string>
+
+    <!-- New Order -->
+    <string name="new_order_title">Nuevo Pedido</string>
+    <string name="client_data">Datos del Cliente</string>
+    <string name="select_client">Seleccione un cliente</string>
+    <string name="client_label">Cliente</string>
+    <string name="observations">Observaciones (opcional)</string>
+    <string name="add_product">Agregar Producto</string>
+    <string name="select_product">Seleccione un producto</string>
+    <string name="product_label">Producto</string>
+    <string name="quantity_label">Cant.</string>
+    <string name="add_button">Agregar</string>
+    <string name="order_summary">Resumen del Pedido</string>
+    <string name="no_products_added">Aun no se agregaron productos.</string>
+    <string name="total_to_pay">Total a pagar:</string>
+    <string name="confirm_order_button">Confirmar y Guardar Pedido</string>
+
+    <!-- Common -->
+    <string name="back">Volver</string>
 </resources>

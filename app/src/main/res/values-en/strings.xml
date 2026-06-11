@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Order Management</string>
+    <!-- Login -->
+    <string name="welcome">Welcome</string>
+    <string name="system_name">Order Management System</string>
+    <string name="email_label">Email address</string>
+    <string name="password_label">Password</string>
+    <string name="login_button">Sign In</string>
+    <string name="register_prompt">Don\'t have an account? Sign up</string>
+    <string name="error_required_fields">All fields are required</string>
+    <string name="error_invalid_email">Invalid email format</string>
+
+    <!-- New Order -->
+    <string name="new_order_title">New Order</string>
+    <string name="client_data">Client Data</string>
+    <string name="select_client">Select a client</string>
+    <string name="client_label">Client</string>
+    <string name="observations">Observations (optional)</string>
+    <string name="add_product">Add Product</string>
+    <string name="select_product">Select a product</string>
+    <string name="product_label">Product</string>
+    <string name="quantity_label">Qty</string>
+    <string name="add_button">Add</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="no_products_added">No products added yet.</string>
+    <string name="total_to_pay">Total to pay:</string>
+    <string name="confirm_order_button">Confirm and Save Order</string>
+
+    <!-- Common -->
+    <string name="back">Back</string>
+</resources>
