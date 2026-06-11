@@ -18,7 +18,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -74,25 +76,25 @@ fun ClientsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(clients) { client ->
-                ClientCard(client = client)
+                ClientElevatedCard(client = client)
             }
         }
     }
 }
 
 @Composable
-fun ClientCard(client: Cliente) {
+fun ClientElevatedCard(client: Cliente) {
     val containerColor = if (client.activo) {
         MaterialTheme.colorScheme.surface
     } else {
         MaterialTheme.colorScheme.surfaceVariant
     }
 
-    Card(
+    ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
+        shape = RoundedCornerShape(24.dp)
     ) {
         Column(
             modifier = Modifier

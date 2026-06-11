@@ -20,7 +20,9 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -64,9 +66,9 @@ fun NewOrderScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         }
@@ -81,11 +83,11 @@ fun NewOrderScreen(
         ) {
 
             // TARJETA 1: Datos Generales
-            Card(
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(12.dp)
+                colors = CardDefaults.elevatedCardColors(containerColor = com.undef.gestionpedidos.ui.theme.CardSurface),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -131,10 +133,10 @@ fun NewOrderScreen(
             }
 
             // TARJETA 2: Seleccion de Productos
-            Card(
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -213,11 +215,11 @@ fun NewOrderScreen(
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
             } else {
-                Card(
+                ElevatedCard(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    colors = CardDefaults.elevatedCardColors(containerColor = com.undef.gestionpedidos.ui.theme.CardSurface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(24.dp)
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
                         uiState.orderLines.forEachIndexed { index, linea ->
@@ -260,10 +262,10 @@ fun NewOrderScreen(
             }
 
             // Total y Confirmacion
-            Card(
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Row(
                     modifier = Modifier
