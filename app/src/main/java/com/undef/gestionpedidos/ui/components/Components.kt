@@ -1,5 +1,8 @@
 package com.undef.gestionpedidos.ui.components
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,11 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.undef.gestionpedidos.domain.model.Pedido
@@ -24,40 +29,61 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun SummaryCard(title: String, value: String, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier,
+        modifier = modifier.animateContentSize(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
 
 @Composable
 fun RecentOrderCard(order: Pedido, onClick: () -> Unit) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            ),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = order.cliente.razonSocial, style = MaterialTheme.typography.titleMedium)
-                Text(text = order.estado.etiqueta, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.tertiary)
+                Text(
+                    text = order.cliente.razonSocial, 
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = order.estado.etiqueta, 
+                    style = MaterialTheme.typography.bodyMedium, 
+                    color = MaterialTheme.colorScheme.tertiary
+                )
             }
-            Text(text = "$${order.total}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.secondary)
+            Text(
+                text = "$${String.format("%.2f", order.total)}", 
+                style = MaterialTheme.typography.titleMedium, 
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary
+            )
         }
     }
 }
@@ -66,13 +92,15 @@ fun RecentOrderCard(order: Pedido, onClick: () -> Unit) {
 fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .animateContentSize(),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
@@ -87,6 +115,7 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
                 Text(
                     text = order.numeroPedido,
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
@@ -95,10 +124,11 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = order.cliente.razonSocial,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(12.dp))
             Row(
@@ -109,12 +139,14 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
                 Text(
                     text = order.estado.etiqueta,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "$${order.total}",
+                    text = "$${String.format("%.2f", order.total)}",
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -126,10 +158,20 @@ fun ProfileInfoRow(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 12.dp, horizontal = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(text = value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        Text(
+            text = label, 
+            style = MaterialTheme.typography.bodyMedium, 
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value, 
+            style = MaterialTheme.typography.bodyLarge, 
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
