@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
@@ -38,6 +40,7 @@ import com.undef.gestionpedidos.ui.feature.clients.ClientsScreen
 import com.undef.gestionpedidos.ui.feature.dashboard.DashboardScreen
 import com.undef.gestionpedidos.ui.feature.newclient.NewClientScreen
 import com.undef.gestionpedidos.ui.feature.neworder.NewOrderScreen
+import com.undef.gestionpedidos.ui.feature.newproduct.NewProductScreen
 import com.undef.gestionpedidos.ui.feature.orderdetail.OrderDetailScreen
 import com.undef.gestionpedidos.ui.feature.orders.OrdersScreen
 import com.undef.gestionpedidos.ui.feature.profile.ProfileScreen
@@ -79,32 +82,35 @@ fun AppNavHost() {
                     ) {
                         bottomNavItems.forEach { (route, title, icon) ->
                             val isSelected = currentRoute == route
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.clip(RoundedCornerShape(24.dp)).clickable {
-                                    navController.navigate(route) {
-                                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
+                            Surface(
+                                color = if (isSelected) BottomNavSelected else Color.Transparent,
+                                shape = RoundedCornerShape(16.dp),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable {
+                                        navController.navigate(route) {
+                                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
-                                }
                             ) {
-                                Surface(
-                                    color = if (isSelected) BottomNavSelected else Color.Transparent,
-                                    shape = RoundedCornerShape(16.dp)
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Icon(
                                         imageVector = icon, 
                                         contentDescription = title,
-                                        tint = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+                                        tint = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = title, 
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
-                                Text(
-                                    text = title, 
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant
-                                )
                             }
                         }
                     }
@@ -151,6 +157,7 @@ fun AppNavHost() {
                 DashboardScreen(
                     onNavigateToNewOrder = { navController.navigate(AppDestination.NewOrder.route) },
                     onNavigateToNewClient = { navController.navigate(AppDestination.NewClient.route) },
+                    onNavigateToNewProduct = { navController.navigate("new_product") },
                     onNavigateToOrderDetail = { orderId -> navController.navigate(AppDestination.OrderDetail.createRoute(orderId)) },
                     onNavigateToProfile = { navController.navigate(AppDestination.Profile.route) }
                 )
@@ -165,7 +172,8 @@ fun AppNavHost() {
 
             composable(AppDestination.Clients.route) {
                 ClientsScreen(
-                    onNavigateToNewClient = { navController.navigate(AppDestination.NewClient.route) }
+                    onNavigateToNewClient = { navController.navigate(AppDestination.NewClient.route) },
+                    onNavigateToEditClient = { clientId -> navController.navigate("edit_client/$clientId") }
                 )
             }
 
@@ -179,6 +187,15 @@ fun AppNavHost() {
 
             composable(AppDestination.NewClient.route) {
                 NewClientScreen(onNavigateBack = { navController.popBackStack() })
+            }
+
+            composable("edit_client/{clientId}", arguments = listOf(navArgument("clientId") { type = NavType.IntType })) { backStackEntry ->
+                val clientId = backStackEntry.arguments?.getInt("clientId") ?: 0
+                NewClientScreen(onNavigateBack = { navController.popBackStack() }, clientId = clientId)
+            }
+
+            composable("new_product") {
+                NewProductScreen(onNavigateBack = { navController.popBackStack() })
             }
 
             composable(AppDestination.Profile.route) {

@@ -45,7 +45,7 @@ class OrderRepository(
         val fechaCreacion = try { LocalDate.parse(entity.fechaCreacion) } catch(e: Exception) { LocalDate.now() }
         val fechaEntregaEstimada = try { LocalDate.parse(entity.fechaEntregaEstimada) } catch(e: Exception) { LocalDate.now().plusDays(1) }
 
-        return Pedido(entity.id, entity.numeroPedido, cliente, estado, fechaCreacion, fechaEntregaEstimada, lineas, entity.observaciones)
+        return Pedido(entity.id, entity.numeroPedido, cliente, estado, fechaCreacion, fechaEntregaEstimada, lineas, entity.observaciones, entity.comprobanteUri)
     }
 
     suspend fun saveOrder(pedido: Pedido) {
@@ -55,7 +55,8 @@ class OrderRepository(
             fechaCreacion = pedido.fechaCreacion.toString(),
             fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
             estado = pedido.estado.name,
-            observaciones = pedido.observaciones
+            observaciones = pedido.observaciones,
+            comprobanteUri = pedido.comprobanteUri
         )
         val orderId = orderDao.insertOrder(entity).toInt()
         
@@ -68,6 +69,37 @@ class OrderRepository(
             )
             orderDao.insertOrderLine(lineEntity)
         }
+    }
+    
+    suspend fun updateOrder(pedido: Pedido) {
+        val entity = OrderEntity(
+            id = pedido.id,
+            numeroPedido = pedido.numeroPedido,
+            clientId = pedido.cliente.id,
+            fechaCreacion = pedido.fechaCreacion.toString(),
+            fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
+            estado = pedido.estado.name,
+            observaciones = pedido.observaciones,
+            comprobanteUri = pedido.comprobanteUri
+        )
+        orderDao.updateOrder(entity)
+        
+        // Sincronizar líneas: borramos las anteriores y guardamos las nuevas
+        orderDao.deleteOrderLines(pedido.id)
+        pedido.lineas.forEach { linea ->
+            val lineEntity = OrderLineEntity(
+                orderId = pedido.id,
+                productId = linea.producto.id,
+                cantidad = linea.cantidad,
+                subtotal = linea.subtotal
+            )
+            orderDao.insertOrderLine(lineEntity)
+        }
+    }
+
+    suspend fun deleteOrder(id: Int) {
+        orderDao.deleteOrderLines(id)
+        orderDao.deleteOrder(id)
     }
     
     suspend fun syncOrdersToCloud(): Boolean {

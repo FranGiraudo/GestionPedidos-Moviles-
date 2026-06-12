@@ -2,6 +2,8 @@ package com.undef.gestionpedidos.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.undef.gestionpedidos.data.local.AppDatabase
 import com.undef.gestionpedidos.data.local.prefs.UserPreferencesRepository
 import com.undef.gestionpedidos.data.remote.ApiService
@@ -22,13 +24,21 @@ object ServiceLocator {
     lateinit var orderRepository: OrderRepository
     lateinit var financeRepository: FinanceRepository
 
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE orders ADD COLUMN comprobanteUri TEXT")
+        }
+    }
+
     fun init(context: Context) {
         // Init Room
         database = Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
-            "gestion_pedidos_db"
-        ).build()
+            "gestion_pedidos.db"
+        )
+        .addMigrations(MIGRATION_1_2)
+        .build()
 
         // Init Retrofit
         val retrofit = Retrofit.Builder()

@@ -21,6 +21,29 @@ class ProfileViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            ServiceLocator.userPreferencesRepository.userEmail.collect { email ->
+                if (email != null) {
+                    _uiState.update { it.copy(userEmail = email) }
+                }
+            }
+        }
+        viewModelScope.launch {
+            ServiceLocator.userPreferencesRepository.userName.collect { name ->
+                if (name != null) {
+                    _uiState.update { it.copy(userName = name) }
+                }
+            }
+        }
+    }
+
+    fun updateProfile(newName: String) {
+        viewModelScope.launch {
+            ServiceLocator.userPreferencesRepository.setUserName(newName)
+        }
+    }
+
     fun syncData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isSyncing = true, syncStatus = "Sincronizando...") }

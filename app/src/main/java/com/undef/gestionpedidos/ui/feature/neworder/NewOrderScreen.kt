@@ -84,7 +84,7 @@ fun NewOrderScreen(
             // TARJETA 1: Datos Generales
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.elevatedCardColors(containerColor = com.undef.gestionpedidos.ui.theme.CardSurface),
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
                 shape = RoundedCornerShape(24.dp)
             ) {
@@ -216,7 +216,7 @@ fun NewOrderScreen(
             } else {
                 ElevatedCard(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.elevatedCardColors(containerColor = com.undef.gestionpedidos.ui.theme.CardSurface),
+                    colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                     shape = RoundedCornerShape(24.dp)
                 ) {

@@ -1,10 +1,13 @@
 package com.undef.gestionpedidos.ui.feature.auth
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.undef.gestionpedidos.di.ServiceLocator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class LoginUiState(
     val email: String = "",
@@ -36,6 +39,9 @@ class LoginViewModel : ViewModel() {
             false
         } else {
             _uiState.update { it.copy(error = null) }
+            viewModelScope.launch {
+                ServiceLocator.userPreferencesRepository.saveLoginSession(email)
+            }
             true
         }
     }

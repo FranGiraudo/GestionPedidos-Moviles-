@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 data class DashboardUiState(
     val pedidosRecientes: List<Pedido> = emptyList(),
-    val totalVentasDia: String = "0",
+    val totalVentas: String = "0",
+    val dolarBlue: String = "0",
     val pedidosPendientes: Int = 0
 )
 
@@ -31,10 +32,12 @@ class DashboardViewModel : ViewModel() {
             
             val pendientes = pedidos.count { it.estado == EstadoPedido.BORRADOR }
             val recientes = pedidos.take(5)
+            val ventas = pedidos.filter { it.estado != EstadoPedido.CANCELADO }.sumOf { it.total }
             
             _uiState.value = DashboardUiState(
                 pedidosRecientes = recientes,
-                totalVentasDia = "$dolares", // Mostramos el dlar azul aqu como demo
+                totalVentas = String.format("%.2f", ventas),
+                dolarBlue = String.format("%.2f", dolares),
                 pedidosPendientes = pendientes
             )
         }

@@ -11,5 +11,6 @@ data class OrderEntity(
     val fechaCreacion: String,
     val fechaEntregaEstimada: String,
     val estado: String,
-    val observaciones: String
+    val observaciones: String,
+    val comprobanteUri: String? = null
 )

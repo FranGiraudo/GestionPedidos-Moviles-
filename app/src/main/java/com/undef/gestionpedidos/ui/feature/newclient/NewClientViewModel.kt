@@ -22,6 +22,27 @@ data class NewClientUiState(
 class NewClientViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NewClientUiState())
     val uiState: StateFlow<NewClientUiState> = _uiState.asStateFlow()
+    
+    private var editingClientId: Int? = null
+
+    fun loadClient(id: Int) {
+        editingClientId = id
+        viewModelScope.launch {
+            val client = ServiceLocator.clientRepository.getClientById(id)
+            if (client != null) {
+                _uiState.update { 
+                    it.copy(
+                        razonSocial = client.razonSocial,
+                        cuit = client.cuit,
+                        direccion = client.direccion,
+                        localidad = client.localidad,
+                        telefono = client.telefono,
+                        email = client.email
+                    )
+                }
+            }
+        }
+    }
 
     fun updateRazonSocial(newValue: String) {
         _uiState.update { it.copy(razonSocial = newValue) }
@@ -65,8 +86,20 @@ class NewClientViewModel : ViewModel() {
             return false
         }
         viewModelScope.launch {
-            val cliente = Cliente(0, state.razonSocial, state.cuit, state.direccion, state.localidad, state.telefono, state.email)
-            ServiceLocator.clientRepository.addClient(cliente)
+            val cliente = Cliente(
+                id = editingClientId ?: 0,
+                razonSocial = state.razonSocial, 
+                cuit = state.cuit, 
+                direccion = state.direccion, 
+                localidad = state.localidad, 
+                telefono = state.telefono, 
+                email = state.email
+            )
+            if (editingClientId != null) {
+                ServiceLocator.clientRepository.updateClient(cliente)
+            } else {
+                ServiceLocator.clientRepository.addClient(cliente)
+            }
         }
         return true
     }

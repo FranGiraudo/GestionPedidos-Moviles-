@@ -10,7 +10,8 @@ data class Pedido(
     val fechaCreacion: LocalDate,
     val fechaEntregaEstimada: LocalDate,
     val lineas: List<LineaPedido>,
-    val observaciones: String = ""
+    val observaciones: String = "",
+    val comprobanteUri: String? = null
 ) {
     val total: Double
         get() = lineas.sumOf { it.subtotal }

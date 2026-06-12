@@ -43,10 +43,9 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // Estados mockeados para la UI
     var expandedThemeMenu by remember { mutableStateOf(false) }
-    val themeOptions = listOf("Sistema", "Modo Claro", "Modo Oscuro", "Empresa A (Azul)", "Empresa B (Verde)")
-    var selectedTheme by remember { mutableStateOf(themeOptions[0]) }
+    val themeOptions = listOf("Modo Claro", "Modo Oscuro")
+    val selectedTheme = if (uiState.modoOscuroActivo) "Modo Oscuro" else "Modo Claro"
 
         var sonidos by remember { mutableStateOf(true) }
 
@@ -102,9 +101,8 @@ fun SettingsScreen(
                             DropdownMenuItem(
                                 text = { Text(option) },
                                 onClick = {
-                                    selectedTheme = option
                                     expandedThemeMenu = false
-                                    // TODO: Emitir evento al ViewModel para actualizar DataStore y Theme
+                                    viewModel.toggleModoOscuro(option == "Modo Oscuro")
                                 }
                             )
                         }

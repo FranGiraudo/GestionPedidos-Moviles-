@@ -42,6 +42,7 @@ import com.undef.gestionpedidos.domain.model.Cliente
 @Composable
 fun ClientsScreen(
     onNavigateToNewClient: () -> Unit,
+    onNavigateToEditClient: (Int) -> Unit,
     viewModel: ClientsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,14 +76,14 @@ fun ClientsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(clients) { client ->
-                ClientElevatedCard(client = client)
+                ClientElevatedCard(client = client, onClick = { onNavigateToEditClient(client.id) })
             }
         }
     }
 }
 
 @Composable
-fun ClientElevatedCard(client: Cliente) {
+fun ClientElevatedCard(client: Cliente, onClick: () -> Unit = {}) {
     val containerColor = if (client.activo) {
         MaterialTheme.colorScheme.surface
     } else {
@@ -93,7 +94,8 @@ fun ClientElevatedCard(client: Cliente) {
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = containerColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(24.dp),
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier

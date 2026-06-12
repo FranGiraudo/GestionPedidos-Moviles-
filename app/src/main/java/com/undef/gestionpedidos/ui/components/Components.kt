@@ -105,7 +105,7 @@ fun RecentOrderCard(order: Pedido, onClick: () -> Unit) {
                     stiffness = Spring.StiffnessLow
                 )
             ),
-        colors = CardDefaults.elevatedCardColors(containerColor = CardSurface),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
         shape = RoundedCornerShape(24.dp)
     ) {
@@ -122,7 +122,7 @@ fun RecentOrderCard(order: Pedido, onClick: () -> Unit) {
                     text = order.cliente.razonSocial, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 StatusPill(status = order.estado)
@@ -131,10 +131,10 @@ fun RecentOrderCard(order: Pedido, onClick: () -> Unit) {
                 text = "$${String.format("%.2f", order.total)}", 
                 style = MaterialTheme.typography.titleMedium, 
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = ">", style = MaterialTheme.typography.titleMedium, color = TextSecondary, fontWeight = FontWeight.Bold)
+            Text(text = ">", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -149,7 +149,7 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
             .clip(RoundedCornerShape(24.dp))
             .clickable { onClick() }
             .animateContentSize(),
-        colors = CardDefaults.elevatedCardColors(containerColor = CardSurface),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
         shape = RoundedCornerShape(24.dp)
     ) {
@@ -166,12 +166,12 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
                 Text(
                     text = order.numeroPedido,
                     style = MaterialTheme.typography.labelLarge,
-                    color = TextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = order.fechaCreacion.format(dateFormatter),
                     style = MaterialTheme.typography.labelMedium,
-                    color = TextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -179,7 +179,7 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
                 text = order.cliente.razonSocial,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -191,7 +191,7 @@ fun OrderHistoryCard(order: Pedido, onClick: () -> Unit) {
                 Text(
                     text = "$${String.format("%.2f", order.total)}",
                     style = MaterialTheme.typography.titleLarge,
-                    color = TextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -211,13 +211,13 @@ fun ProfileInfoRow(label: String, value: String) {
         Text(
             text = label, 
             style = MaterialTheme.typography.bodyMedium, 
-            color = TextSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value, 
             style = MaterialTheme.typography.bodyLarge, 
             fontWeight = FontWeight.SemiBold,
-            color = TextPrimary
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

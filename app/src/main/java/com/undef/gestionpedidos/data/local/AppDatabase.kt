@@ -12,7 +12,7 @@ import com.undef.gestionpedidos.data.local.entity.ProductEntity
 
 @Database(
     entities = [ClientEntity::class, ProductEntity::class, OrderEntity::class, OrderLineEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

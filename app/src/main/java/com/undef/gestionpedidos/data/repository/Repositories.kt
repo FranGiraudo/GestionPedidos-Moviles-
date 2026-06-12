@@ -1,4 +1,4 @@
-﻿package com.undef.gestionpedidos.data.repository
+package com.undef.gestionpedidos.data.repository
 
 import com.undef.gestionpedidos.data.local.dao.ClientDao
 import com.undef.gestionpedidos.data.local.dao.ProductDao
@@ -32,6 +32,20 @@ class ClientRepository(private val clientDao: ClientDao, private val apiService:
             activo = cliente.activo
         )
         clientDao.insertClient(entity)
+    }
+
+    suspend fun updateClient(cliente: Cliente) {
+        val entity = ClientEntity(
+            id = cliente.id,
+            razonSocial = cliente.razonSocial,
+            cuit = cliente.cuit,
+            direccion = cliente.direccion,
+            localidad = cliente.localidad,
+            telefono = cliente.telefono,
+            email = cliente.email,
+            activo = cliente.activo
+        )
+        clientDao.updateClient(entity)
     }
 
     suspend fun fetchCuitData(cuit: String): String {

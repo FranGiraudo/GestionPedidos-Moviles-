@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val LightColorScheme = lightColorScheme(
@@ -28,8 +29,23 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = TextSecondary,
 )
 
-// No dark mode needed specifically for this mockup, fallback to light
-private val DarkColorScheme = LightColorScheme
+private val DarkColorScheme = darkColorScheme(
+    primary          = Lavender,
+    onPrimary        = DarkBlue,
+    primaryContainer = DarkBlue,
+    onPrimaryContainer = Lavender,
+
+    secondary        = Color(0xFF81D4FA),
+    onSecondary      = DarkBlue,
+
+    background       = Color(0xFF121212),
+    onBackground     = Color(0xFFE0E0E0),
+
+    surface          = Color(0xFF1E1E1E),
+    onSurface        = Color(0xFFE0E0E0),
+    surfaceVariant   = Color(0xFF2C2C2C),
+    onSurfaceVariant = Color(0xFFAAAAAA),
+)
 
 @Composable
 fun GestionPedidosTheme(
@@ -37,8 +53,7 @@ fun GestionPedidosTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    // Forzamos el esquema claro para mantener la estética del mockup siempre
-    val colorScheme = LightColorScheme
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

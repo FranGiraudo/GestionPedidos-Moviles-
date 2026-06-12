@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
@@ -34,15 +35,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewClientScreen(
+    clientId: Int? = null,
     onNavigateBack: () -> Unit,
     viewModel: NewClientViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(clientId) {
+        if (clientId != null && clientId > 0) {
+            viewModel.loadClient(clientId)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_cliente)) },
+                title = { Text(if (clientId != null && clientId > 0) "Editar Cliente" else stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_cliente)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")

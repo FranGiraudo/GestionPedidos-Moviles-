@@ -12,10 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -40,6 +45,7 @@ import com.undef.gestionpedidos.domain.model.Pedido
 fun DashboardScreen(
     onNavigateToNewOrder: () -> Unit,
     onNavigateToNewClient: () -> Unit,
+    onNavigateToNewProduct: () -> Unit,
     onNavigateToOrderDetail: (Int) -> Unit,
     onNavigateToProfile: () -> Unit,
     viewModel: DashboardViewModel = viewModel()
@@ -66,6 +72,7 @@ fun DashboardScreen(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier
                     .size(48.dp)
+                    .clip(CircleShape)
                     .clickable { onNavigateToProfile() }
             ) {
                 Icon(
@@ -84,15 +91,15 @@ fun DashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SummaryCard(
-                title = "Ventas del Mes",
-                value = "$ 1.250.000",
+                title = "Ventas Totales",
+                value = "$ ${uiState.totalVentas}",
                 bgColor = com.undef.gestionpedidos.ui.theme.DarkBlue,
                 fgColor = androidx.compose.ui.graphics.Color.White,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                title = "Pedidos Hoy",
-                value = "12",
+                title = "Dólar Blue",
+                value = "$ ${uiState.dolarBlue}",
                 bgColor = com.undef.gestionpedidos.ui.theme.Lavender,
                 fgColor = com.undef.gestionpedidos.ui.theme.DarkBlue,
                 modifier = Modifier.weight(1f)
@@ -126,6 +133,18 @@ fun DashboardScreen(
                 Icon(Icons.Default.Person, contentDescription = null)
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(stringResource(com.undef.gestionpedidos.R.string.txt_nuevo_cliente))
+            }
+            Button(
+                onClick = onNavigateToNewProduct,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
+            ) {
+                Icon(Icons.Default.AddCircle, contentDescription = null)
+                Spacer(modifier = Modifier.size(4.dp))
+                Text("Prod.", maxLines = 1)
             }
         }
 
