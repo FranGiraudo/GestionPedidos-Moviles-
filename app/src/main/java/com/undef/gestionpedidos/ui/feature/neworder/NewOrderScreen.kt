@@ -1,6 +1,7 @@
 package com.undef.gestionpedidos.ui.feature.neworder
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -32,14 +35,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -54,6 +62,19 @@ fun NewOrderScreen(
     viewModel: NewOrderViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Muestra el Snackbar cuando hay un mensaje y navega atrás si el envío fue exitoso
+    LaunchedEffect(uiState.userMessage) {
+        val message = uiState.userMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearUserMessage()
+            if (uiState.pedidoEnviadoExitoso) {
+                onNavigateBack()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -70,6 +91,9 @@ fun NewOrderScreen(
                     navigationIconContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) { paddingValues ->
         Column(
@@ -131,7 +155,7 @@ fun NewOrderScreen(
                 }
             }
 
-            // TARJETA 2: Seleccion de Productos
+            // TARJETA 2: Selección de Productos
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -199,7 +223,7 @@ fun NewOrderScreen(
                 }
             }
 
-            // SECCION 3: Resumen del Pedido
+            // SECCIÓN 3: Resumen del Pedido
             Text(
                 text = stringResource(com.undef.gestionpedidos.R.string.txt_resumen_del_pedido),
                 style = MaterialTheme.typography.titleLarge,
@@ -260,7 +284,7 @@ fun NewOrderScreen(
                 }
             }
 
-            // Total y Confirmacion
+            // Total
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -270,7 +294,7 @@ fun NewOrderScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -289,17 +313,28 @@ fun NewOrderScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Botón Confirmar — llama confirmarPedido() que hace el POST real
             Button(
-                onClick = {
-                    // TODO: Guardar pedido en la base de datos local (Room)
-                    onNavigateBack()
-                },
+                onClick = { viewModel.confirmarPedido() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = uiState.selectedClient != null && uiState.orderLines.isNotEmpty()
+                enabled = uiState.selectedClient != null
+                        && uiState.orderLines.isNotEmpty()
+                        && !uiState.isLoading
             ) {
-                Text("Confirmar y Guardar Pedido", style = MaterialTheme.typography.titleMedium)
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = stringResource(com.undef.gestionpedidos.R.string.confirm_order_button),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
