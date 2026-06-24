@@ -38,6 +38,13 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    androidx.compose.runtime.LaunchedEffect(uiState.isLoginSuccess) {
+        if (uiState.isLoginSuccess) {
+            onLoginSuccess()
+            viewModel.onLoginSuccessHandled()
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -115,9 +122,7 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    if (viewModel.validateLogin()) {
-                        onLoginSuccess()
-                    }
+                    viewModel.performLogin()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

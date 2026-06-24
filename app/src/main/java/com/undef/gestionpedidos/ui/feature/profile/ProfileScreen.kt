@@ -49,6 +49,14 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    
+    androidx.compose.runtime.LaunchedEffect(uiState.isLoggedOut) {
+        if (uiState.isLoggedOut) {
+            onLogout()
+            viewModel.onLogoutHandled()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -112,9 +120,18 @@ fun ProfileScreen(
                     Text(text = stringResource(com.undef.gestionpedidos.R.string.txt_informacion_de_la_cu), style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    ProfileInfoRow(label = "Rol", value = "Administrador")
-                    ProfileInfoRow(label = "Sucursal", value = "Casa Central")
-                    ProfileInfoRow(label = "Ultimo acceso", value = "Hoy, 08:30 AM")
+                    ProfileInfoRow(
+                        label = stringResource(com.undef.gestionpedidos.R.string.profile_label_rol),
+                        value = uiState.userRole
+                    )
+                    ProfileInfoRow(
+                        label = stringResource(com.undef.gestionpedidos.R.string.profile_label_sucursal),
+                        value = stringResource(com.undef.gestionpedidos.R.string.profile_value_sucursal)
+                    )
+                    ProfileInfoRow(
+                        label = stringResource(com.undef.gestionpedidos.R.string.profile_label_ultimo_acceso),
+                        value = stringResource(com.undef.gestionpedidos.R.string.profile_value_ultimo_acceso)
+                    )
                 }
             }
 
@@ -134,8 +151,7 @@ fun ProfileScreen(
 
             Button(
                 onClick = {
-                    // TODO: Aca llamaremos a viewModel.logout() y limpiaremos DataStore
-                    onLogout()
+                    viewModel.logout()
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)

@@ -15,4 +15,8 @@ sealed class AppDestination(val route: String) {
     object OrderDetail : AppDestination("order_detail/{orderId}") {
         fun createRoute(orderId: Int) = "order_detail/$orderId"
     }
+    object NewProduct : AppDestination("new_product")
+    object EditClient : AppDestination("edit_client/{clientId}") {
+        fun createRoute(clientId: Int) = "edit_client/$clientId"
+    }
 }

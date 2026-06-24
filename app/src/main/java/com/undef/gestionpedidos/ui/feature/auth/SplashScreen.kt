@@ -11,14 +11,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.undef.gestionpedidos.data.local.SessionManager
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 @Composable
-fun SplashScreen(onNavigateToLogin: () -> Unit) {
+fun SplashScreen(
+    onNavigateToLogin: () -> Unit,
+    onNavigateToHome: () -> Unit
+) {
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
+        val sessionManager = SessionManager(context)
+        val isLoggedIn = sessionManager.isLoggedInFlow.first()
+        
         delay(1500)
-        onNavigateToLogin()
+        
+        if (isLoggedIn) {
+            onNavigateToHome()
+        } else {
+            onNavigateToLogin()
+        }
     }
     
     Box(

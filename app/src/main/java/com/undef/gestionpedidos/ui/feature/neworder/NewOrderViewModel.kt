@@ -1,8 +1,9 @@
 package com.undef.gestionpedidos.ui.feature.neworder
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.undef.gestionpedidos.data.mock.MockData
+import com.undef.gestionpedidos.R
 import com.undef.gestionpedidos.data.repository.PedidoRepository
 import com.undef.gestionpedidos.domain.model.Cliente
 import com.undef.gestionpedidos.domain.model.LineaPedido
@@ -28,7 +29,7 @@ data class NewOrderUiState(
     val pedidoEnviadoExitoso: Boolean = false
 )
 
-class NewOrderViewModel : ViewModel() {
+class NewOrderViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = PedidoRepository()
 
@@ -129,7 +130,7 @@ class NewOrderViewModel : ViewModel() {
 
         // Validación (sin cambiar lógica de negocio)
         if (cliente == null || lineas.isEmpty()) {
-            _uiState.update { it.copy(userMessage = "Seleccioná un cliente y al menos un producto.") }
+            _uiState.update { it.copy(userMessage = getApplication<Application>().getString(R.string.error_select_client_product)) }
             return
         }
 
@@ -157,7 +158,7 @@ class NewOrderViewModel : ViewModel() {
                     _uiState.update {
                         it.copy(
                             isLoading   = false,
-                            userMessage = "Error al enviar el pedido. Intentá nuevamente."
+                            userMessage = getApplication<Application>().getString(R.string.error_send_order)
                         )
                     }
                 }

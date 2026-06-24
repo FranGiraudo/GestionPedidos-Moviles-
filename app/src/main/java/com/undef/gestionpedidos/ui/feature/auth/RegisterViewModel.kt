@@ -1,6 +1,8 @@
 package com.undef.gestionpedidos.ui.feature.auth
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.undef.gestionpedidos.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +15,7 @@ data class RegisterUiState(
     val error: String? = null
 )
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
 
@@ -32,11 +34,11 @@ class RegisterViewModel : ViewModel() {
     fun register(): Boolean {
         val state = _uiState.value
         if (state.nombreCompleto.isBlank() || state.email.isBlank() || state.contrasena.isBlank()) {
-            _uiState.update { it.copy(error = "Todos los campos son obligatorios") }
+            _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_required_fields)) }
             return false
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(state.email).matches()) {
-            _uiState.update { it.copy(error = "El formato del email es invalido") }
+            _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_invalid_email)) }
             return false
         }
         return true
