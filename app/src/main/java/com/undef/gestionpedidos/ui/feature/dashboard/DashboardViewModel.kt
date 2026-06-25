@@ -24,6 +24,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
 
     init {
         loadData()
+        syncData()
     }
 
     private fun loadData() {
@@ -32,10 +33,16 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
                 _uiState.update { 
                     it.copy(
                         pedidosRecientes = pedidos,
-                        pedidosPendientes = pedidos.count { p -> p.estado.name == "PENDIENTE" }
+                        pedidosPendientes = pedidos.count { p -> p.estado.name == "EN_PREPARACION" || p.estado.name == "CONFIRMADO" }
                     ) 
                 }
             }
+        }
+    }
+
+    private fun syncData() {
+        viewModelScope.launch {
+            repository.syncOrdersFromCloud()
         }
     }
 }

@@ -97,4 +97,30 @@ class PedidoRepository(context: Context) {
             Result.failure(e)
         }
     }
+    suspend fun syncOrdersFromCloud(): Result<Unit> {
+        return try {
+            val response = api.getPedidos()
+            if (response.isSuccessful && response.body() != null) {
+                val ordersDto = response.body()!!
+                val entities = ordersDto.map { resDto ->
+                    OrderEntity(
+                        numeroPedido = "PED-${resDto.id}",
+                        clienteId = resDto.clienteId,
+                        clienteNombre = resDto.clienteNombre,
+                        estado = resDto.estado,
+                        fechaCreacion = System.currentTimeMillis(),
+                        total = resDto.total
+                    )
+                }
+                // Limpiar caché vieja e insertar nueva para SSOT
+                dao.deleteAllOrders()
+                dao.insertOrders(entities)
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error al sincronizar: HTTP ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

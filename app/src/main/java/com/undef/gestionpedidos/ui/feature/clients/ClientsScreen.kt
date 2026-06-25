@@ -29,13 +29,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.runtime.getValue
+import com.undef.gestionpedidos.R
 import com.undef.gestionpedidos.domain.model.Cliente
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,7 +129,7 @@ fun ClientElevatedCard(client: Cliente) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Phone,
-                    contentDescription = "Telefono",
+                    contentDescription = stringResource(R.string.cd_telefono),
                     modifier = Modifier.height(16.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -142,7 +143,7 @@ fun ClientElevatedCard(client: Cliente) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Email,
-                    contentDescription = "Email",
+                    contentDescription = stringResource(R.string.cd_email),
                     modifier = Modifier.height(16.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )

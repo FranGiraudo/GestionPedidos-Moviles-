@@ -25,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.undef.gestionpedidos.R
 
 @Composable
 fun LoginScreen(
@@ -63,7 +65,7 @@ fun LoginScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Lock,
-                    contentDescription = "Logo",
+                    contentDescription = stringResource(R.string.cd_logo),
                     modifier = Modifier.padding(24.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )

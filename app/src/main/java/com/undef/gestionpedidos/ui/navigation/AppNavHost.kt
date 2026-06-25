@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +55,7 @@ fun AppNavHost() {
 
     val bottomNavItems = listOf(
         Triple(AppDestination.Dashboard.route, "Inicio", Icons.Default.Home),
-        Triple(AppDestination.Orders.route, "Pedidos", Icons.Default.List),
+        Triple(AppDestination.Orders.route, "Pedidos", Icons.AutoMirrored.Filled.List),
         Triple(AppDestination.Clients.route, "Clientes", Icons.Default.Face),
         Triple(AppDestination.Statistics.route, "Datos", Icons.Default.Star)
     )

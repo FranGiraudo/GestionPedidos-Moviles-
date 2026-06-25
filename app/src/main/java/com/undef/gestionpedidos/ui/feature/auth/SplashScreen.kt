@@ -12,7 +12,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.undef.gestionpedidos.R
 import com.undef.gestionpedidos.data.local.SessionManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -43,7 +45,7 @@ fun SplashScreen(
     ) {
         Icon(
             imageVector = Icons.Default.ShoppingCart,
-            contentDescription = "Splash Logo",
+            contentDescription = stringResource(R.string.cd_splash_logo),
             modifier = Modifier.size(120.dp),
             tint = MaterialTheme.colorScheme.primary
         )

@@ -98,4 +98,25 @@
 
     <!-- Register -->
     <string name="txt_registrarse">Registrarse</string>
+
+    <!-- Content Descriptions & Accessibility -->
+    <string name="cd_logo">Logo</string>
+    <string name="cd_volver">Volver</string>
+    <string name="cd_splash_logo">Splash Logo</string>
+    <string name="cd_nuevo_cliente">Nuevo Cliente</string>
+    <string name="cd_telefono">Teléfono</string>
+    <string name="cd_email">Email</string>
+    <string name="cd_perfil">Perfil</string>
+    <string name="cd_eliminar">Eliminar</string>
+    <string name="cd_guardar_cambios">Guardar cambios</string>
+    <string name="cd_editar_pedido">Editar pedido</string>
+    <string name="cd_compartir_pedido">Compartir pedido</string>
+    <string name="cd_nuevo_pedido">Nuevo Pedido</string>
+    <string name="cd_avatar">Avatar</string>
+
+    <!-- Additional UI Strings -->
+    <string name="txt_product_format">%1$s ($%2$.2f)</string>
+    <string name="txt_confirm_delete_order">¿Estás seguro de que deseas eliminar el pedido %1$s?\n\nEsta acción no se puede deshacer.</string>
+    <string name="txt_notificaciones_push">Notificaciones Push</string>
+    <string name="txt_sonidos_app">Sonidos en la App</string>
 </resources>

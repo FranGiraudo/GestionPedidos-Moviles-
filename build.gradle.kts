@@ -5,3 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
 }
+
+allprojects {
+    layout.buildDirectory.set(File("C:/Temp/AndroidBuilds/GestionPedidos-Moviles-/${project.name}"))
+}

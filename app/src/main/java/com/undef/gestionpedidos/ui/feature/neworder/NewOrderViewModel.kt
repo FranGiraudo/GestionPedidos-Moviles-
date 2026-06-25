@@ -31,7 +31,7 @@ data class NewOrderUiState(
 
 class NewOrderViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = PedidoRepository()
+    private val repository = PedidoRepository(application)
 
     private val _uiState = MutableStateFlow(NewOrderUiState())
     val uiState: StateFlow<NewOrderUiState> = _uiState.asStateFlow()
