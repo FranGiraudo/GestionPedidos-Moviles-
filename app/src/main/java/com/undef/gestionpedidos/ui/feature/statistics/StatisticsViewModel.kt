@@ -7,6 +7,7 @@ import com.undef.gestionpedidos.domain.model.EstadoPedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -36,9 +37,9 @@ class StatisticsViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
-            val pedidos = ServiceLocator.orderRepository.getAllOrders()
+            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
             val validOrders = pedidos.filter { it.estado != EstadoPedido.CANCELADO }
-            val clients = ServiceLocator.clientRepository.getAllClients()
+            val clients = ServiceLocator.clientRepository.getAllClients().first()
 
             val ventasTotales = validOrders.sumOf { it.total }
 

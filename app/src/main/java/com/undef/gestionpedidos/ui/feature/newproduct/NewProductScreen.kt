@@ -7,6 +7,9 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,6 +23,7 @@ fun NewProductScreen(
     viewModel: NewProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var categoriaMenuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -99,6 +103,36 @@ fun NewProductScreen(
                     modifier = Modifier.weight(1f),
                     singleLine = true
                 )
+            }
+
+            ExposedDropdownMenuBox(
+                expanded = categoriaMenuExpanded,
+                onExpandedChange = { categoriaMenuExpanded = it }
+            ) {
+                OutlinedTextField(
+                    value = uiState.categorias.find { it.id == uiState.categoriaSeleccionadaId }?.nombre ?: "Seleccionar categoría",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Categoría") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoriaMenuExpanded) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = categoriaMenuExpanded,
+                    onDismissRequest = { categoriaMenuExpanded = false }
+                ) {
+                    uiState.categorias.forEach { categoria ->
+                        DropdownMenuItem(
+                            text = { Text(categoria.nombre) },
+                            onClick = {
+                                viewModel.onCategoriaSelected(categoria.id)
+                                categoriaMenuExpanded = false
+                            }
+                        )
+                    }
+                }
             }
 
             if (uiState.isLoading) {

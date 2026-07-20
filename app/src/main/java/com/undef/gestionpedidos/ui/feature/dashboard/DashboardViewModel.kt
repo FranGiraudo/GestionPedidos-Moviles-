@@ -8,6 +8,7 @@ import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class DashboardUiState(
@@ -27,7 +28,7 @@ class DashboardViewModel : ViewModel() {
 
     private fun loadData() {
         viewModelScope.launch {
-            val pedidos = ServiceLocator.orderRepository.getAllOrders()
+            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
             val dolares = ServiceLocator.financeRepository.getDolarBlue()
             
             val pendientes = pedidos.count { it.estado == EstadoPedido.BORRADOR }

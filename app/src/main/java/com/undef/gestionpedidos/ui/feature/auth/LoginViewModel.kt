@@ -9,9 +9,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private val LOGIN_EMAIL_REGEX = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+
 data class LoginUiState(
     val email: String = "",
     val contrasena: String = "",
+    val isLoading: Boolean = false,
     val error: String? = null
 )
 
@@ -27,22 +30,29 @@ class LoginViewModel : ViewModel() {
         _uiState.update { it.copy(contrasena = contrasena, error = null) }
     }
 
-    fun validateLogin(): Boolean {
+    fun validateLogin(onSuccess: () -> Unit) {
         val email = _uiState.value.email
         val contrasena = _uiState.value.contrasena
 
-        return if (email.isBlank() || contrasena.isBlank()) {
+        if (email.isBlank() || contrasena.isBlank()) {
             _uiState.update { it.copy(error = "Todos los campos son obligatorios") }
-            false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return
+        }
+        if (!LOGIN_EMAIL_REGEX.matches(email)) {
             _uiState.update { it.copy(error = "El formato del email es invalido") }
-            false
-        } else {
-            _uiState.update { it.copy(error = null) }
-            viewModelScope.launch {
+            return
+        }
+
+        _uiState.update { it.copy(isLoading = true, error = null) }
+
+        viewModelScope.launch {
+            val usuario = ServiceLocator.userRepository.login(email, contrasena)
+            if (usuario != null) {
                 ServiceLocator.userPreferencesRepository.saveLoginSession(email)
+                onSuccess()
+            } else {
+                _uiState.update { it.copy(isLoading = false, error = "Email o contraseña incorrectos") }
             }
-            true
         }
     }
 }

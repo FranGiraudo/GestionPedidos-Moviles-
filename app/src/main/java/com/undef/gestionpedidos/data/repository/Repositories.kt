@@ -8,11 +8,15 @@ import com.undef.gestionpedidos.domain.model.Cliente
 import com.undef.gestionpedidos.domain.model.Producto
 import com.undef.gestionpedidos.data.remote.ApiService
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ClientRepository(private val clientDao: ClientDao, private val apiService: ApiService) {
-    suspend fun getAllClients(): List<Cliente> {
-        return clientDao.getAllClients().map {
-            Cliente(it.id, it.razonSocial, it.cuit, it.direccion, it.localidad, it.telefono, it.email, it.activo)
+    fun getAllClients(): Flow<List<Cliente>> {
+        return clientDao.getAllClients().map { list ->
+            list.map {
+                Cliente(it.id, it.razonSocial, it.cuit, it.direccion, it.localidad, it.telefono, it.email, it.activo)
+            }
         }
     }
 
@@ -60,15 +64,17 @@ class ClientRepository(private val clientDao: ClientDao, private val apiService:
 }
 
 class ProductRepository(private val productDao: ProductDao) {
-    suspend fun getAllProducts(): List<Producto> {
-        return productDao.getAllProducts().map {
-            Producto(it.id, it.codigo, it.descripcion, it.unidadMedida, it.precioUnitario, it.stockActual, it.activo)
+    fun getAllProducts(): Flow<List<Producto>> {
+        return productDao.getAllProducts().map { list ->
+            list.map {
+                Producto(it.id, it.codigo, it.descripcion ?: "", it.unidadMedida, it.precioUnitario, it.stockActual, it.activo, it.categoryId)
+            }
         }
     }
 
     suspend fun getProductById(id: Int): Producto? {
         val it = productDao.getProductById(id) ?: return null
-        return Producto(it.id, it.codigo, it.descripcion, it.unidadMedida, it.precioUnitario, it.stockActual, it.activo)
+        return Producto(it.id, it.codigo, it.descripcion ?: "", it.unidadMedida, it.precioUnitario, it.stockActual, it.activo, it.categoryId)
     }
 
     suspend fun addProduct(producto: Producto) {
@@ -78,6 +84,8 @@ class ProductRepository(private val productDao: ProductDao) {
             unidadMedida = producto.unidadMedida,
             precioUnitario = producto.precioUnitario,
             stockActual = producto.stockActual,
+            nombre = producto.codigo,
+            categoryId = producto.categoryId,
             activo = producto.activo
         )
         productDao.insertProduct(entity)

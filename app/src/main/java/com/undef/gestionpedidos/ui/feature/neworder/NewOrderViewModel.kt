@@ -11,6 +11,7 @@ import com.undef.gestionpedidos.domain.model.Producto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -38,8 +39,8 @@ class NewOrderViewModel : ViewModel() {
 
     private fun loadData() {
         viewModelScope.launch {
-            val clients = ServiceLocator.clientRepository.getAllClients()
-            val products = ServiceLocator.productRepository.getAllProducts()
+            val clients = ServiceLocator.clientRepository.getAllClients().first()
+            val products = ServiceLocator.productRepository.getAllProducts().first()
             _uiState.update { it.copy(
                 availableClients = clients.filter { c -> c.activo },
                 availableProducts = products.filter { p -> p.activo }

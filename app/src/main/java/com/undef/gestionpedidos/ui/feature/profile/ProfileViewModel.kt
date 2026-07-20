@@ -55,4 +55,11 @@ class ProfileViewModel : ViewModel() {
             }
         }
     }
+
+    fun logout(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            ServiceLocator.userPreferencesRepository.clearSession()
+            onSuccess()
+        }
+    }
 }

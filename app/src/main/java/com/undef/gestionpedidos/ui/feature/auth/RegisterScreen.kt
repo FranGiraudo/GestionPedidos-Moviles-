@@ -109,10 +109,9 @@ fun RegisterScreen(
 
             Button(
                 onClick = {
-                    if (viewModel.register()) {
-                        onNavigateBack()
-                    }
+                    viewModel.register(onSuccess = onNavigateBack)
                 },
+                enabled = !uiState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

@@ -7,5 +7,6 @@ data class Producto(
     val unidadMedida: String,
     val precioUnitario: Double,
     val stockActual: Int,
-    val activo: Boolean = true
+    val activo: Boolean = true,
+    val categoryId: Int? = null
 )

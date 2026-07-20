@@ -3,6 +3,7 @@ package com.undef.gestionpedidos.ui.feature.newproduct
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.undef.gestionpedidos.di.ServiceLocator
+import com.undef.gestionpedidos.domain.model.Categoria
 import com.undef.gestionpedidos.domain.model.Producto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,12 +17,33 @@ data class NewProductUiState(
     val unidadMedida: String = "Unidad",
     val precioUnitario: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val categorias: List<Categoria> = emptyList(),
+    val categoriaSeleccionadaId: Int? = null
 )
 
 class NewProductViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NewProductUiState())
     val uiState: StateFlow<NewProductUiState> = _uiState.asStateFlow()
+
+    init {
+        loadCategorias()
+    }
+
+    private fun loadCategorias() {
+        viewModelScope.launch {
+            try {
+                val categorias = ServiceLocator.categoryRepository.getAllCategories()
+                _uiState.update { it.copy(categorias = categorias) }
+            } catch (e: Exception) {
+                // Si falla la carga de categorías, se mantiene la lista vacía sin bloquear el formulario
+            }
+        }
+    }
+
+    fun onCategoriaSelected(categoriaId: Int) {
+        _uiState.update { it.copy(categoriaSeleccionadaId = categoriaId) }
+    }
 
     fun onCodigoChange(newCodigo: String) {
         _uiState.update { it.copy(codigo = newCodigo, error = null) }
@@ -41,7 +63,7 @@ class NewProductViewModel : ViewModel() {
 
     fun saveProduct(onSuccess: () -> Unit) {
         val state = _uiState.value
-        
+
         if (state.codigo.isBlank() || state.descripcion.isBlank() || state.precioUnitario.isBlank()) {
             _uiState.update { it.copy(error = "Por favor, completa todos los campos.") }
             return
@@ -63,8 +85,9 @@ class NewProductViewModel : ViewModel() {
                     descripcion = state.descripcion,
                     unidadMedida = state.unidadMedida,
                     precioUnitario = precio,
-                    stockActual = 0, // Stock inicial
-                    activo = true
+                    stockActual = 0,
+                    activo = true,
+                    categoryId = state.categoriaSeleccionadaId
                 )
                 ServiceLocator.productRepository.addProduct(producto)
                 onSuccess()

@@ -10,6 +10,7 @@ import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 
 import com.undef.gestionpedidos.domain.model.LineaPedido
 import com.undef.gestionpedidos.domain.model.Producto
@@ -48,7 +49,7 @@ class OrderDetailViewModel(private val orderId: Int) : ViewModel() {
 
     private fun loadProducts() {
         viewModelScope.launch {
-            val products = ServiceLocator.productRepository.getAllProducts()
+            val products = ServiceLocator.productRepository.getAllProducts().first()
             _uiState.value = _uiState.value.copy(availableProducts = products.filter { it.activo })
         }
     }

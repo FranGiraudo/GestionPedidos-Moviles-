@@ -130,6 +130,11 @@ fun AppNavHost() {
                         navController.navigate(AppDestination.Login.route) {
                             popUpTo(AppDestination.Splash.route) { inclusive = true }
                         }
+                    },
+                    onNavigateToDashboard = {
+                        navController.navigate(AppDestination.Dashboard.route) {
+                            popUpTo(AppDestination.Splash.route) { inclusive = true }
+                        }
                     }
                 )
             }

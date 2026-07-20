@@ -9,5 +9,6 @@ data class OrderLineEntity(
     val orderId: Int,
     val productId: Int,
     val cantidad: Int,
+    val precioUnitario: Double,
     val subtotal: Double
 )

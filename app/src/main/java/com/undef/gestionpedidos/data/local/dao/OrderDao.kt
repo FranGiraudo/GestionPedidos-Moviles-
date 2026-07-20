@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.undef.gestionpedidos.data.local.entity.OrderEntity
 import com.undef.gestionpedidos.data.local.entity.OrderLineEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OrderDao {
@@ -20,7 +21,7 @@ interface OrderDao {
     suspend fun updateOrder(order: OrderEntity): Int
 
     @Query("SELECT * FROM orders ORDER BY id DESC")
-    suspend fun getAllOrders(): List<OrderEntity>
+    fun getAllOrders(): Flow<List<OrderEntity>>
 
     @Query("SELECT * FROM orders WHERE id = :id")
     suspend fun getOrderById(id: Int): OrderEntity?

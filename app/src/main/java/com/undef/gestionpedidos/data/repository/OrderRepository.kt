@@ -5,12 +5,18 @@ import com.undef.gestionpedidos.data.local.dao.OrderDao
 import com.undef.gestionpedidos.data.local.dao.ProductDao
 import com.undef.gestionpedidos.data.local.entity.OrderEntity
 import com.undef.gestionpedidos.data.local.entity.OrderLineEntity
+import com.undef.gestionpedidos.data.remote.ApiService
+import com.undef.gestionpedidos.data.remote.OrderLineSyncDto
+import com.undef.gestionpedidos.data.remote.OrderSyncDto
+import com.undef.gestionpedidos.di.ServiceLocator
 import com.undef.gestionpedidos.domain.model.Cliente
 import com.undef.gestionpedidos.domain.model.EstadoPedido
 import com.undef.gestionpedidos.domain.model.LineaPedido
 import com.undef.gestionpedidos.domain.model.Pedido
 import com.undef.gestionpedidos.domain.model.Producto
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class OrderRepository(
@@ -18,10 +24,9 @@ class OrderRepository(
     private val clientDao: ClientDao,
     private val productDao: ProductDao
 ) {
-    suspend fun getAllOrders(): List<Pedido> {
-        val orders = orderDao.getAllOrders()
-        return orders.mapNotNull { entity ->
-            mapEntityToDomain(entity)
+    fun getAllOrders(): Flow<List<Pedido>> {
+        return orderDao.getAllOrders().map { entities ->
+            entities.mapNotNull { entity -> mapEntityToDomain(entity) }
         }
     }
 
@@ -37,7 +42,7 @@ class OrderRepository(
         val lineEntities = orderDao.getLinesForOrder(entity.id)
         val lineas = lineEntities.mapNotNull { lineEnt ->
             val pEnt = productDao.getProductById(lineEnt.productId) ?: return@mapNotNull null
-            val producto = Producto(pEnt.id, pEnt.codigo, pEnt.descripcion, pEnt.unidadMedida, pEnt.precioUnitario, pEnt.stockActual, pEnt.activo)
+            val producto = Producto(pEnt.id, pEnt.codigo, pEnt.descripcion ?: "", pEnt.unidadMedida, pEnt.precioUnitario, pEnt.stockActual, pEnt.activo, pEnt.categoryId)
             LineaPedido(lineEnt.id, lineEnt.orderId, producto, lineEnt.cantidad, producto.precioUnitario)
         }
         
@@ -65,6 +70,7 @@ class OrderRepository(
                 orderId = orderId,
                 productId = linea.producto.id,
                 cantidad = linea.cantidad,
+                precioUnitario = linea.precioUnitario,
                 subtotal = linea.subtotal
             )
             orderDao.insertOrderLine(lineEntity)
@@ -91,6 +97,7 @@ class OrderRepository(
                 orderId = pedido.id,
                 productId = linea.producto.id,
                 cantidad = linea.cantidad,
+                precioUnitario = linea.precioUnitario,
                 subtotal = linea.subtotal
             )
             orderDao.insertOrderLine(lineEntity)
@@ -103,7 +110,37 @@ class OrderRepository(
     }
     
     suspend fun syncOrdersToCloud(): Boolean {
-        delay(2000)
-        return true
+        return try {
+            val orders = getAllOrders().first()
+            val dtos = orders.map { pedido ->
+                val lines = orderDao.getLinesForOrder(pedido.id).map { line: com.undef.gestionpedidos.data.local.entity.OrderLineEntity ->
+                    OrderLineSyncDto(
+                        productId = line.productId,
+                        cantidad = line.cantidad,
+                        precioUnitario = line.precioUnitario,
+                        subtotal = line.subtotal
+                    )
+                }
+                OrderSyncDto(
+                    orderId = pedido.id,
+                    numeroPedido = pedido.numeroPedido,
+                    clientId = pedido.cliente.id,
+                    fechaCreacion = pedido.fechaCreacion.toString(),
+                    fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
+                    estado = pedido.estado.name,
+                    observaciones = pedido.observaciones,
+                    total = pedido.total,
+                    lineas = lines
+                )
+            }
+            val response = ServiceLocator.supabaseApiService.syncOrders(
+                apiKey = ServiceLocator.SUPABASE_ANON_KEY,
+                authorization = "Bearer ${ServiceLocator.SUPABASE_ANON_KEY}",
+                orders = dtos
+            )
+            response.isSuccessful
+        } catch (e: Exception) {
+            false
+        }
     }
 }

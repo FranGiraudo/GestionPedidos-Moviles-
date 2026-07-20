@@ -186,8 +186,7 @@ fun ProfileScreen(
 
             Button(
                 onClick = {
-                    // TODO: Aca llamaremos a viewModel.logout() y limpiaremos DataStore
-                    onLogout()
+                    viewModel.logout(onSuccess = onLogout)
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)

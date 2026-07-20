@@ -7,6 +7,7 @@ import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class OrdersUiState(
@@ -24,7 +25,7 @@ class OrdersViewModel : ViewModel() {
 
     private fun loadOrders() {
         viewModelScope.launch {
-            val pedidos = ServiceLocator.orderRepository.getAllOrders()
+            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
             _uiState.value = _uiState.value.copy(orders = pedidos)
         }
     }
@@ -32,7 +33,7 @@ class OrdersViewModel : ViewModel() {
     fun updateSearchQuery(query: String) {
         _uiState.value = _uiState.value.copy(searchQuery = query)
         viewModelScope.launch {
-            val pedidos = ServiceLocator.orderRepository.getAllOrders()
+            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
             val filtrados = if(query.isBlank()) pedidos else pedidos.filter { it.numeroPedido.contains(query, ignoreCase = true) }
             _uiState.value = _uiState.value.copy(orders = filtrados)
         }

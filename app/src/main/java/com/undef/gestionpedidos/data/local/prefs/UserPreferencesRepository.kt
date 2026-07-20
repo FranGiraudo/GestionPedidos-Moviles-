@@ -52,7 +52,10 @@ class UserPreferencesRepository(private val context: Context) {
 
     suspend fun clearSession() {
         context.dataStore.edit { prefs ->
-            prefs.clear()
+            prefs.remove(IS_LOGGED_IN)
+            prefs.remove(USER_EMAIL)
+            prefs.remove(USER_NAME)
+            // IS_DARK_MODE se preserva intencionalmente: es una preferencia de UI, no de sesión
         }
     }
 
