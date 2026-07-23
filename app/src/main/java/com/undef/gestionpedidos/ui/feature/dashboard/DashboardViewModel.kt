@@ -8,7 +8,6 @@ import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class DashboardUiState(
@@ -23,24 +22,27 @@ class DashboardViewModel : ViewModel() {
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
     init {
-        loadData()
-    }
-
-    private fun loadData() {
+        // Fetch puntual del dólar blue
         viewModelScope.launch {
-            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
             val dolares = ServiceLocator.financeRepository.getDolarBlue()
-            
-            val pendientes = pedidos.count { it.estado == EstadoPedido.BORRADOR }
-            val recientes = pedidos.take(5)
-            val ventas = pedidos.filter { it.estado != EstadoPedido.CANCELADO }.sumOf { it.total }
-            
-            _uiState.value = DashboardUiState(
-                pedidosRecientes = recientes,
-                totalVentas = String.format("%.2f", ventas),
-                dolarBlue = String.format("%.2f", dolares),
-                pedidosPendientes = pendientes
+            _uiState.value = _uiState.value.copy(
+                dolarBlue = String.format("%.2f", dolares)
             )
+        }
+
+        // Colección reactiva de los pedidos de Room
+        viewModelScope.launch {
+            ServiceLocator.orderRepository.getAllOrders().collect { pedidos ->
+                val pendientes = pedidos.count { it.estado == EstadoPedido.BORRADOR }
+                val recientes = pedidos.take(5)
+                val ventas = pedidos.filter { it.estado != EstadoPedido.CANCELADO }.sumOf { it.total }
+
+                _uiState.value = _uiState.value.copy(
+                    pedidosRecientes = recientes,
+                    totalVentas = String.format("%.2f", ventas),
+                    pedidosPendientes = pendientes
+                )
+            }
         }
     }
 }

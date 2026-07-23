@@ -7,7 +7,6 @@ import com.undef.gestionpedidos.domain.model.Pedido
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class OrdersUiState(
@@ -19,23 +18,25 @@ class OrdersViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(OrdersUiState())
     val uiState: StateFlow<OrdersUiState> = _uiState.asStateFlow()
 
-    init {
-        loadOrders()
-    }
+    private var allOrders: List<Pedido> = emptyList()
 
-    private fun loadOrders() {
+    init {
         viewModelScope.launch {
-            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
-            _uiState.value = _uiState.value.copy(orders = pedidos)
+            ServiceLocator.orderRepository.getAllOrders().collect { pedidos ->
+                allOrders = pedidos
+                applyFilter()
+            }
         }
     }
 
     fun updateSearchQuery(query: String) {
         _uiState.value = _uiState.value.copy(searchQuery = query)
-        viewModelScope.launch {
-            val pedidos = ServiceLocator.orderRepository.getAllOrders().first()
-            val filtrados = if(query.isBlank()) pedidos else pedidos.filter { it.numeroPedido.contains(query, ignoreCase = true) }
-            _uiState.value = _uiState.value.copy(orders = filtrados)
-        }
+        applyFilter()
+    }
+
+    private fun applyFilter() {
+        val query = _uiState.value.searchQuery
+        val filtrados = if (query.isBlank()) allOrders else allOrders.filter { it.numeroPedido.contains(query, ignoreCase = true) }
+        _uiState.value = _uiState.value.copy(orders = filtrados)
     }
 }
