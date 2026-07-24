@@ -6,7 +6,9 @@ Aplicación Android nativa para distribuidores y preventistas. Permite gestionar
 
 ## Capturas
 
-> *Para ver la app en acción, instalá el APK o correla desde Android Studio.*
+![Demo de la aplicación](demo.gif)
+
+> *Para ver la app en acción, instalá el APK de la raíz o correla desde Android Studio.*
 
 ---
 
