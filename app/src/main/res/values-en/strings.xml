@@ -9,6 +9,7 @@
     <string name="register_prompt">Don\'t have an account? Sign up</string>
     <string name="error_required_fields">All fields are required</string>
     <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_invalid_credentials">Incorrect email or password</string>
 
     <!-- New Order -->
     <string name="new_order_title">New Order</string>

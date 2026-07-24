@@ -15,7 +15,7 @@ data class LoginUiState(
     val email: String = "",
     val contrasena: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val errorRes: Int? = null
 )
 
 class LoginViewModel : ViewModel() {
@@ -23,11 +23,11 @@ class LoginViewModel : ViewModel() {
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun updateEmail(email: String) {
-        _uiState.update { it.copy(email = email, error = null) }
+        _uiState.update { it.copy(email = email, errorRes = null) }
     }
 
     fun updateContrasena(contrasena: String) {
-        _uiState.update { it.copy(contrasena = contrasena, error = null) }
+        _uiState.update { it.copy(contrasena = contrasena, errorRes = null) }
     }
 
     fun validateLogin(onSuccess: () -> Unit) {
@@ -35,15 +35,15 @@ class LoginViewModel : ViewModel() {
         val contrasena = _uiState.value.contrasena
 
         if (email.isBlank() || contrasena.isBlank()) {
-            _uiState.update { it.copy(error = "Todos los campos son obligatorios") }
+            _uiState.update { it.copy(errorRes = com.undef.gestionpedidos.R.string.error_required_fields) }
             return
         }
         if (!LOGIN_EMAIL_REGEX.matches(email)) {
-            _uiState.update { it.copy(error = "El formato del email es invalido") }
+            _uiState.update { it.copy(errorRes = com.undef.gestionpedidos.R.string.error_invalid_email) }
             return
         }
 
-        _uiState.update { it.copy(isLoading = true, error = null) }
+        _uiState.update { it.copy(isLoading = true, errorRes = null) }
 
         viewModelScope.launch {
             val usuario = ServiceLocator.userRepository.login(email, contrasena)
@@ -51,7 +51,7 @@ class LoginViewModel : ViewModel() {
                 ServiceLocator.userPreferencesRepository.saveLoginSession(email)
                 onSuccess()
             } else {
-                _uiState.update { it.copy(isLoading = false, error = "Email o contraseña incorrectos") }
+                _uiState.update { it.copy(isLoading = false, errorRes = com.undef.gestionpedidos.R.string.error_invalid_credentials) }
             }
         }
     }

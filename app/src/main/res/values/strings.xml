@@ -9,6 +9,7 @@
     <string name="register_prompt">No tenes cuenta? Registrate</string>
     <string name="error_required_fields">Todos los campos son obligatorios</string>
     <string name="error_invalid_email">El formato del email es invalido</string>
+    <string name="error_invalid_credentials">Email o contraseña incorrectos</string>
 
     <!-- New Order -->
     <string name="new_order_title">Nuevo Pedido</string>

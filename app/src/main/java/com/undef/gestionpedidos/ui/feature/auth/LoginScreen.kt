@@ -85,7 +85,7 @@ fun LoginScreen(
                 label = { Text(stringResource(com.undef.gestionpedidos.R.string.email_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                isError = uiState.error != null
+                isError = uiState.errorRes != null
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -97,12 +97,12 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                isError = uiState.error != null
+                isError = uiState.errorRes != null
             )
 
-            if (uiState.error != null) {
+            if (uiState.errorRes != null) {
                 Text(
-                    text = uiState.error ?: "",
+                    text = stringResource(id = uiState.errorRes!!),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
