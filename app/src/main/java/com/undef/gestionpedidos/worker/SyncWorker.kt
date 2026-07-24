@@ -2,6 +2,7 @@ package com.undef.gestionpedidos.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
+import androidx.work.ListenableWorker.Result
 import androidx.work.WorkerParameters
 import com.undef.gestionpedidos.di.ServiceLocator
 import kotlinx.coroutines.Dispatchers
