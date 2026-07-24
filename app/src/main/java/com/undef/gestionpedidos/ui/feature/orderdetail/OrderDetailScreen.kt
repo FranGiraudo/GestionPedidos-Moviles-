@@ -152,7 +152,7 @@ fun OrderDetailScreen(
                         Icon(
                             imageVector = if (modoEdicion) Icons.Default.Close else Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = if (modoEdicion) "Cancelar" else "Volver",
-                            tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                            tint = androidx.compose.ui.graphics.Color.White
                         )
                     }
                 },
@@ -164,7 +164,7 @@ fun OrderDetailScreen(
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = "Editar pedido",
-                                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                                    tint = androidx.compose.ui.graphics.Color.White
                                 )
                             }
                             // Botón Compartir
@@ -185,7 +185,7 @@ fun OrderDetailScreen(
                                 Icon(
                                     imageVector = Icons.Default.Share,
                                     contentDescription = "Compartir pedido",
-                                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                                    tint = androidx.compose.ui.graphics.Color.White
                                 )
                             }
                         }
