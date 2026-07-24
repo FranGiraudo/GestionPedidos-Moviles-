@@ -1,6 +1,6 @@
 package com.undef.gestionpedidos.ui.feature.statistics
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import com.undef.gestionpedidos.ui.components.MoneyText
 import com.undef.gestionpedidos.ui.components.SkeletonCard
 import com.undef.gestionpedidos.ui.theme.GreenSoft
@@ -146,47 +152,7 @@ fun StatisticsScreen(viewModel: StatisticsViewModel = viewModel()) {
                                 fontWeight = FontWeight.W600
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            val maxSale = uiState.dailySales.maxOfOrNull { it.amount } ?: 1.0
-                            Row(
-                                modifier = Modifier.fillMaxWidth().height(160.dp).padding(horizontal = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                uiState.dailySales.forEach { dailySale ->
-                                    val isMax = dailySale.amount == maxSale
-                                    val heightFraction = if (maxSale > 0) (dailySale.amount / maxSale).toFloat() else 0f
-                                    val barHeight = (110 * heightFraction.coerceAtLeast(0.05f)).dp
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Bottom,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        if (dailySale.amount > 0) {
-                                            Text(
-                                                text = "$${String.format("%.0f", dailySale.amount)}",
-                                                style = MaterialTheme.typography.labelSmall.copy(fontFamily = MonoFamily, fontSize = 7.sp),
-                                                color = if (isMax) Green700 else MaterialTheme.colorScheme.onSurfaceVariant,
-                                                modifier = Modifier.padding(bottom = 4.dp)
-                                            )
-                                        }
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.75f)
-                                                .height(barHeight)
-                                                .background(
-                                                    if (isMax) Green600 else GreenSoft,
-                                                    RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
-                                                )
-                                        )
-                                        Spacer(modifier = Modifier.height(6.dp))
-                                        Text(
-                                            text = dailySale.day,
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                            SalesLineChart(dailySales = uiState.dailySales)
                         }
                     }
                 }
@@ -297,5 +263,95 @@ fun TopItem(name: String, progress: Float, value: String, isMoney: Boolean = tru
             color = Green600,
             trackColor = GreenSoft
         )
+    }
+}
+
+@Composable
+fun SalesLineChart(dailySales: List<com.undef.gestionpedidos.ui.feature.statistics.DailySale>) {
+    val maxSale = dailySales.maxOfOrNull { it.amount } ?: 1.0
+    
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(130.dp)
+                .padding(vertical = 8.dp)
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val pointSpacing = size.width / (dailySales.size - 1).coerceAtLeast(1)
+                
+                val points = dailySales.mapIndexed { index, sale ->
+                    val x = index * pointSpacing
+                    // Invert y because 0 is top
+                    val heightFraction = if (maxSale > 0) (sale.amount / maxSale).toFloat() else 0f
+                    val y = size.height - (size.height * heightFraction * 0.85f)
+                    androidx.compose.ui.geometry.Offset(x, y)
+                }
+
+                if (points.size > 1) {
+                    // Draw fill
+                    val fillPath = Path().apply {
+                        moveTo(points.first().x, size.height)
+                        points.forEach { lineTo(it.x, it.y) }
+                        lineTo(points.last().x, size.height)
+                        close()
+                    }
+                    
+                    drawPath(
+                        path = fillPath,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Green600.copy(alpha = 0.3f),
+                                GreenSoft.copy(alpha = 0.05f)
+                            )
+                        )
+                    )
+
+                    // Draw line
+                    val linePath = Path().apply {
+                        moveTo(points.first().x, points.first().y)
+                        points.drop(1).forEach { lineTo(it.x, it.y) }
+                    }
+
+                    drawPath(
+                        path = linePath,
+                        color = Green600,
+                        style = Stroke(
+                            width = 3.dp.toPx(),
+                            cap = StrokeCap.Round,
+                            join = StrokeJoin.Round
+                        )
+                    )
+
+                    // Draw points
+                    points.forEach { point ->
+                        drawCircle(
+                            color = Green600,
+                            radius = 4.dp.toPx(),
+                            center = point
+                        )
+                        drawCircle(
+                            color = androidx.compose.ui.graphics.Color.White,
+                            radius = 2.dp.toPx(),
+                            center = point
+                        )
+                    }
+                }
+            }
+        }
+        
+        // Draw X axis labels
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            dailySales.forEach { dailySale ->
+                Text(
+                    text = dailySale.day,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
     }
 }

@@ -36,14 +36,14 @@ fun SplashScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(com.undef.gestionpedidos.ui.theme.Green600),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = Icons.Default.ShoppingCart,
             contentDescription = "Splash Logo",
             modifier = Modifier.size(120.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = androidx.compose.ui.graphics.Color.White
         )
     }
 }
