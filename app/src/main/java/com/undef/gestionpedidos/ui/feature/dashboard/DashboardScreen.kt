@@ -81,7 +81,7 @@ fun DashboardScreen(
                 ) {
                     Column {
                         Text(
-                            text = stringResource(com.undef.gestionpedidos.R.string.txt_hola_distribuidor),
+                            text = if (uiState.userName.isNotBlank()) "Hola, ${uiState.userName}" else "Hola 👋",
                             style = MaterialTheme.typography.headlineMedium,
                             color = Color.White
                         )

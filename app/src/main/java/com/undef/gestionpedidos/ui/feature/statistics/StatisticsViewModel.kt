@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 data class TopProductInfo(val name: String, val quantity: Int, val fraction: Float)
 data class TopClientInfo(val name: String, val spent: Double, val fraction: Float)
@@ -28,6 +30,11 @@ data class StatisticsUiState(
 class StatisticsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
+
+    private val nf: NumberFormat = NumberFormat.getNumberInstance(Locale("es", "AR")).apply {
+        minimumFractionDigits = 2
+        maximumFractionDigits = 2
+    }
 
     init {
         viewModelScope.launch {
@@ -70,7 +77,7 @@ class StatisticsViewModel : ViewModel() {
                 }
 
                 StatisticsUiState(
-                    ventasTotalesMes = "$ ${String.format("%.2f", ventasTotales)}",
+                    ventasTotalesMes = "$ ${nf.format(ventasTotales)}",
                     nuevosClientesMes = clients.size.toString(),
                     topProducts = topProducts,
                     topClients = topClients,
