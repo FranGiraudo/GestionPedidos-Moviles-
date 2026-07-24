@@ -140,6 +140,6 @@ Migraciones: versión 1 → 7, todas escritas a mano con `Migration(from, to)`.
 ## Desarrollado por
 
 - **Francisco Giraudo** — Desarrollo Android  
-- **Mateo Sposito** — Análisis y Testing
+- **Leandro Sposito** — Análisis y Testing
 
 *Trabajo Práctico Integrador — Desarrollo de Aplicaciones Móviles*
