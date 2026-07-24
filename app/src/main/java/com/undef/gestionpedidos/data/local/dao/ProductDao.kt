@@ -18,6 +18,18 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProduct(product: ProductEntity): Long
     
+    @androidx.room.Update
+    suspend fun updateProduct(product: ProductEntity): Int
+
+    @Query("UPDATE products SET activo = 0 WHERE id = :id")
+    suspend fun deactivateProduct(id: Int): Int
+
+    @Query("UPDATE products SET activo = 1 WHERE id = :id")
+    suspend fun activateProduct(id: Int): Int
+    
+    @Query("DELETE FROM products WHERE id = :id")
+    suspend fun deleteProduct(id: Int): Int
+    
     @Query("DELETE FROM products")
     suspend fun clearProducts(): Int
 }

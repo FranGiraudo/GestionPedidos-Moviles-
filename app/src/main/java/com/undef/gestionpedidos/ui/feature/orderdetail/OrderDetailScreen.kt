@@ -57,10 +57,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.LaunchedEffect
 import com.undef.gestionpedidos.domain.model.EstadoPedido
 import com.undef.gestionpedidos.domain.model.LineaPedido
+import com.undef.gestionpedidos.ui.components.MoneyText
+import com.undef.gestionpedidos.ui.components.StatusPill
+import com.undef.gestionpedidos.ui.theme.Green600
+import com.undef.gestionpedidos.ui.theme.Graphite900
+import com.undef.gestionpedidos.ui.theme.MonoFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,11 +78,30 @@ fun OrderDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val order = uiState.order
+
+    if (uiState.error != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearError() },
+            title = { Text(stringResource(com.undef.gestionpedidos.R.string.txt_error)) },
+            text = { Text(uiState.error!!) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearError() }) {
+                    Text(stringResource(com.undef.gestionpedidos.R.string.txt_ok))
+                }
+            }
+        )
+    }
     
     val context = LocalContext.current
 
     // Estados para modo edición
     var modoEdicion by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.isSaved) {
+        if (uiState.isSaved) {
+            modoEdicion = false
+        }
+    }
     var numeroPedido by remember(order) { mutableStateOf(order?.numeroPedido ?: "") }
     var clienteRazonSocial by remember(order) { mutableStateOf(order?.cliente?.razonSocial ?: "") }
     var estadoSeleccionado by remember(order) { mutableStateOf(order?.estado ?: EstadoPedido.BORRADOR) }
@@ -108,10 +134,12 @@ fun OrderDetailScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = if (modoEdicion)
-                        MaterialTheme.colorScheme.tertiary
+                        MaterialTheme.colorScheme.secondary
                     else
-                        MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                        Graphite900,
+                    titleContentColor = androidx.compose.ui.graphics.Color.White,
+                    navigationIconContentColor = androidx.compose.ui.graphics.Color.White,
+                    actionIconContentColor = androidx.compose.ui.graphics.Color.White
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
@@ -252,7 +280,7 @@ fun OrderDetailScreen(
 
             // Comprobante
             Text(
-                text = "Comprobante",
+                text = stringResource(com.undef.gestionpedidos.R.string.txt_comprobante),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -267,7 +295,7 @@ fun OrderDetailScreen(
                     TextButton(onClick = { 
                         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) 
                     }) {
-                        Text("Cambiar Comprobante")
+                        Text(stringResource(com.undef.gestionpedidos.R.string.txt_cambiar_comprobante))
                     }
                 }
             } else {
@@ -280,7 +308,7 @@ fun OrderDetailScreen(
                     ) {
                         Icon(Icons.Default.CameraAlt, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Adjuntar Comprobante")
+                        Text(stringResource(com.undef.gestionpedidos.R.string.txt_adjuntar_comprobante))
                     }
                 } else {
                     Text("Sin comprobante adjunto", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -330,7 +358,7 @@ fun OrderDetailScreen(
                             ) {
                                 uiState.availableProducts.forEach { product ->
                                     DropdownMenuItem(
-                                        text = { Text("${product.descripcion} - $${product.precioUnitario}") },
+                                        text = { Text("${product.descripcion} - $${product.precioUnitario} (Stock: ${product.stockActual})") },
                                         onClick = {
                                             viewModel.addProductLine(product)
                                             showAddDropdown = false
@@ -350,10 +378,11 @@ fun OrderDetailScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
+                MoneyText(
                     text = "Total: $${String.format("%.2f", totalCalculado)}",
-                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 22.sp,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.W700,
                     modifier = Modifier.weight(1f).padding(end = 8.dp)
                 )
 
@@ -376,13 +405,10 @@ fun OrderDetailScreen(
             if (modoEdicion) {
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
-                    onClick = {
-                        viewModel.saveOrderChanges(estadoSeleccionado)
-                        modoEdicion = false
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
+                    onClick = { viewModel.saveOrderChanges(estadoSeleccionado) },
+                    modifier = Modifier.fillMaxWidth().height(52.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Green600),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
                 ) {
                     Icon(imageVector = Icons.Default.Check, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))

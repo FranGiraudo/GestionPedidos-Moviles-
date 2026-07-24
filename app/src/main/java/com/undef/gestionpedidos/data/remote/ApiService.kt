@@ -16,11 +16,6 @@ data class DolarResponse(
     val fechaActualizacion: String
 )
 
-data class CuitResponse(
-    val cuit: String,
-    val razonSocial: String
-)
-
 data class SyncResponse(
     val status: String,
     val message: String

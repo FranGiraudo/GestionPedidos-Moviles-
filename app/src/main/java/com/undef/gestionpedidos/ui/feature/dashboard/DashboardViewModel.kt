@@ -14,7 +14,8 @@ data class DashboardUiState(
     val pedidosRecientes: List<Pedido> = emptyList(),
     val totalVentas: String = "0",
     val dolarBlue: String = "0",
-    val pedidosPendientes: Int = 0
+    val pedidosPendientes: Int = 0,
+    val isLoading: Boolean = true
 )
 
 class DashboardViewModel : ViewModel() {
@@ -40,7 +41,8 @@ class DashboardViewModel : ViewModel() {
                 _uiState.value = _uiState.value.copy(
                     pedidosRecientes = recientes,
                     totalVentas = String.format("%.2f", ventas),
-                    pedidosPendientes = pendientes
+                    pedidosPendientes = pendientes,
+                    isLoading = false
                 )
             }
         }

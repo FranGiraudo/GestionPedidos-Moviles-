@@ -2,90 +2,103 @@ package com.undef.gestionpedidos.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/** Fuente monoespaciada para montos, stocks y códigos */
+val MonoFamily: FontFamily = FontFamily.Monospace
+
 val AppTypography = Typography(
-    // Titulos de pantalla
+    // Pantalla principal / saludo
     headlineLarge = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
-        lineHeight = 34.sp,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W600,
+        fontSize = 26.sp,
+        lineHeight = 32.sp,
         letterSpacing = (-0.5).sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
         letterSpacing = (-0.3).sp
     ),
     headlineSmall = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 18.sp,
-        lineHeight = 24.sp,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
         letterSpacing = 0.sp
     ),
 
-    // Subtitulos y etiquetas de seccion
+    // Secciones y tarjetas
     titleLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
         fontSize = 16.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.sp
     ),
     titleMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
     titleSmall = TextStyle(
-        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.1.sp
     ),
 
-    // Cuerpo de texto general
+    // Cuerpo de texto
     bodyLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W400,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.3.sp
     ),
     bodyMedium = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W400,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.2.sp
     ),
     bodySmall = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W400,
+        fontSize = 11.sp,
+        lineHeight = 15.sp,
+        letterSpacing = 0.3.sp
     ),
 
-    // Botones y etiquetas de accion
+    // Botones y etiquetas
     labelLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
     labelMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
+        fontSize = 11.sp,
+        lineHeight = 15.sp,
+        letterSpacing = 0.4.sp
     ),
     labelSmall = TextStyle(
-        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W500,
         fontSize = 10.sp,
         lineHeight = 14.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.4.sp
     )
 )

@@ -82,4 +82,21 @@
     <string name="txt_estadisticas_de_vent">Estadisticas de Ventas</string>
     <string name="txt_ventas_totales_mes_a">Ventas Totales (Mes Actual)</string>
     <string name="txt_productos_mas_vendid">Productos mas vendidos</string>
+    <string name="txt_error">Error</string>
+    <string name="txt_ok">OK</string>
+    <string name="txt_guardar_producto">Guardar Producto</string>
+    <string name="txt_c_digo_ej_p001">Código (ej: P001)</string>
+    <string name="txt_descripci_n">Descripción</string>
+    <string name="txt_unidad_ej_kg_lt_un">Unidad (ej: Kg, Lt, Un)</string>
+    <string name="txt_stock_inicial_opcion">Stock Inicial (opcional, por defecto 0)</string>
+    <string name="txt_categor_a">Categoría</string>
+    <string name="txt_cambiar_comprobante">Cambiar Comprobante</string>
+    <string name="txt_adjuntar_comprobante">Adjuntar Comprobante</string>
+    <string name="txt_comprobante">Comprobante</string>
+    <string name="txt_guardar">Guardar</string>
+    <string name="txt_editar_perfil">Editar Perfil</string>
+    <string name="txt_ventas_totales">Ventas Totales</string>
+    <string name="txt_total_clientes">Total Clientes</string>
+    <string name="txt_ventas_ltimos_7_d_as">Ventas últimos 7 días</string>
+    <string name="txt_mejores_clientes">Mejores Clientes</string>
 </resources>

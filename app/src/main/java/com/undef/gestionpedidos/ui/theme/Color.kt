@@ -2,35 +2,60 @@ package com.undef.gestionpedidos.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Fondo principal crema
-val BackgroundCream = Color(0xFFFAF7F2)
+// ─── Paleta Base Grafito ────────────────────────────────────────────────────
+val Graphite900 = Color(0xFF2B2E33)   // Primary header, TopAppBar, FAB
+val Graphite700 = Color(0xFF3D4148)   // Avatar background oscuro sobre header
+val Graphite500 = Color(0xFF6B6A64)   // Texto neutro / inactivo
+val Graphite100 = Color(0xFFF0EFEB)   // Fondo neutro suave
 
-// Colores principales
-val DarkBlue = Color(0xFF2B4365)
-val Lavender = Color(0xFFE9E1F7)
-val PurpleMain = Color(0xFF5B45C4)
+// ─── Paleta Verde Accent ─────────────────────────────────────────────────────
+val Green700     = Color(0xFF1F6A48)   // Texto verde oscuro (AA sobre fondo claro)
+val Green600     = Color(0xFF2E7D5B)   // Acento principal (botón CTA, ítems activos)
+val Green400     = Color(0xFF4ABE87)   // Acento dark mode
+val GreenSoft    = Color(0xFFE4F1EA)   // Fondo suave verde (sección agregar producto)
+val GreenBorder  = Color(0xFFD8E5DD)   // Borde sección verde
 
-// Estados de Pedido (Pills)
-val StatusGreenBg = Color(0xFFC6F6D5)
-val StatusGreenText = Color(0xFF22543D)
+// ─── Paleta Terracota (warning / intermedio) ─────────────────────────────────
+val Terra700     = Color(0xFF9A4F26)   // Texto terracota oscuro
+val Terra500     = Color(0xFFC77B4A)   // Color terracota medio
+val TerraSoft    = Color(0xFFFBEDE3)   // Fondo suave terracota
 
-val StatusPurpleBg = Color(0xFFE9D8FD)
-val StatusPurpleText = Color(0xFF44337A)
+// ─── Superficies y Fondos (Light) ────────────────────────────────────────────
+val BackgroundLight  = Color(0xFFFBFAF8)
+val SurfaceLight     = Color(0xFFFFFFFF)
+val BorderLight      = Color(0xFFE7E5DF)
+val BorderInput      = Color(0xFFDAD8D1)
 
-val StatusOrangeBg = Color(0xFFFEEBC8)
-val StatusOrangeText = Color(0xFF7B341E)
+// ─── Superficies y Fondos (Dark) ─────────────────────────────────────────────
+val BackgroundDark   = Color(0xFF17181A)
+val SurfaceDark      = Color(0xFF1E2023)
+val BorderDark       = Color(0xFF2C2E31)
 
-val StatusGrayBg = Color(0xFFEDF2F7)
-val StatusGrayText = Color(0xFF4A5568)
+// ─── Texto ───────────────────────────────────────────────────────────────────
+val TextPrimaryLight    = Color(0xFF1A1C1F)
+val TextSecondaryLight  = Color(0xFF8B8A85)
+val TextPrimaryDark     = Color(0xFFF2F1EE)
+val TextSecondaryDark   = Color(0xFF8E9095)
 
-// Componentes
-val BottomNavBg = Color(0xFFF3EFFF) // Suave lila
-val BottomNavSelected = Color(0xFFE0D4F5)
-val BottomNavIconActive = Color(0xFF4C3B8D)
+// ─── Status Pills ────────────────────────────────────────────────────────────
+// Entregado → verde
+val StatusGreenBg   = GreenSoft
+val StatusGreenText = Green700
 
-val AvatarBg = Color(0xFFE2E8F0)
-val AvatarText = Color(0xFF4A5568)
+// Despachado / En preparación → terracota
+val StatusOrangeBg   = TerraSoft
+val StatusOrangeText = Terra700
 
-val CardSurface = Color(0xFFFFFFFF)
-val TextPrimary = Color(0xFF1A202C)
-val TextSecondary = Color(0xFF718096)
+// Borrador / Inactivo → neutro
+val StatusNeutralBg   = Graphite100
+val StatusNeutralText = Graphite500
+
+// Cancelado → error Material (se toma del colorScheme.error)
+
+// ─── Legados re-exportados para compatibilidad con components existentes ──────
+/** @deprecated Usar tokens semánticos del theme */
+val AvatarBg    = Graphite700
+val AvatarText  = Color(0xFFD0D3D8)
+val CardSurface = SurfaceLight
+val TextPrimary = TextPrimaryLight
+val TextSecondary = TextSecondaryLight

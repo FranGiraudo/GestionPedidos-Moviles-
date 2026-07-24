@@ -42,6 +42,7 @@ android {
 
 ksp {
     arg("room.generateKotlin", "true")
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -57,6 +58,9 @@ dependencies {
 
     // Navegacion
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // Iconos Extendidos
     implementation("androidx.compose.material:material-icons-extended")

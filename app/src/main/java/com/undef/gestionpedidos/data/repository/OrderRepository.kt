@@ -3,6 +3,8 @@ package com.undef.gestionpedidos.data.repository
 import com.undef.gestionpedidos.data.local.dao.ClientDao
 import com.undef.gestionpedidos.data.local.dao.OrderDao
 import com.undef.gestionpedidos.data.local.dao.ProductDao
+import androidx.room.withTransaction
+import com.undef.gestionpedidos.data.local.AppDatabase
 import com.undef.gestionpedidos.data.local.entity.OrderEntity
 import com.undef.gestionpedidos.data.local.entity.OrderLineEntity
 import com.undef.gestionpedidos.data.remote.ApiService
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class OrderRepository(
+    private val db: AppDatabase,
     private val orderDao: OrderDao,
     private val clientDao: ClientDao,
     private val productDao: ProductDao
@@ -54,59 +57,102 @@ class OrderRepository(
     }
 
     suspend fun saveOrder(pedido: Pedido) {
-        val entity = OrderEntity(
-            numeroPedido = pedido.numeroPedido,
-            clientId = pedido.cliente.id,
-            fechaCreacion = pedido.fechaCreacion.toString(),
-            fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
-            estado = pedido.estado.name,
-            observaciones = pedido.observaciones,
-            comprobanteUri = pedido.comprobanteUri
-        )
-        val orderId = orderDao.insertOrder(entity).toInt()
-        
-        pedido.lineas.forEach { linea ->
-            val lineEntity = OrderLineEntity(
-                orderId = orderId,
-                productId = linea.producto.id,
-                cantidad = linea.cantidad,
-                precioUnitario = linea.precioUnitario,
-                subtotal = linea.subtotal
+        db.withTransaction {
+            // Validar y descontar stock primero
+            pedido.lineas.forEach { linea ->
+                val pEnt = productDao.getProductById(linea.producto.id) ?: throw IllegalStateException("Producto no encontrado")
+                if (pEnt.stockActual < linea.cantidad) {
+                    throw IllegalStateException("Stock insuficiente para ${pEnt.descripcion}. Quedan ${pEnt.stockActual} disponibles.")
+                }
+                productDao.updateProduct(pEnt.copy(stockActual = pEnt.stockActual - linea.cantidad))
+            }
+
+            val entity = OrderEntity(
+                numeroPedido = pedido.numeroPedido,
+                clientId = pedido.cliente.id,
+                fechaCreacion = pedido.fechaCreacion.toString(),
+                fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
+                estado = pedido.estado.name,
+                observaciones = pedido.observaciones,
+                comprobanteUri = pedido.comprobanteUri
             )
-            orderDao.insertOrderLine(lineEntity)
+            val orderId = orderDao.insertOrder(entity).toInt()
+            
+            pedido.lineas.forEach { linea ->
+                val lineEntity = OrderLineEntity(
+                    orderId = orderId,
+                    productId = linea.producto.id,
+                    cantidad = linea.cantidad,
+                    precioUnitario = linea.precioUnitario,
+                    subtotal = linea.subtotal
+                )
+                orderDao.insertOrderLine(lineEntity)
+            }
         }
     }
     
     suspend fun updateOrder(pedido: Pedido) {
-        val entity = OrderEntity(
-            id = pedido.id,
-            numeroPedido = pedido.numeroPedido,
-            clientId = pedido.cliente.id,
-            fechaCreacion = pedido.fechaCreacion.toString(),
-            fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
-            estado = pedido.estado.name,
-            observaciones = pedido.observaciones,
-            comprobanteUri = pedido.comprobanteUri
-        )
-        orderDao.updateOrder(entity)
-        
-        // Sincronizar líneas: borramos las anteriores y guardamos las nuevas
-        orderDao.deleteOrderLines(pedido.id)
-        pedido.lineas.forEach { linea ->
-            val lineEntity = OrderLineEntity(
-                orderId = pedido.id,
-                productId = linea.producto.id,
-                cantidad = linea.cantidad,
-                precioUnitario = linea.precioUnitario,
-                subtotal = linea.subtotal
+        db.withTransaction {
+            // 1. Reponer el stock de las líneas originales
+            val oldLines = orderDao.getLinesForOrder(pedido.id)
+            oldLines.forEach { oldLine ->
+                val pEnt = productDao.getProductById(oldLine.productId)
+                if (pEnt != null) {
+                    productDao.updateProduct(pEnt.copy(stockActual = pEnt.stockActual + oldLine.cantidad))
+                }
+            }
+
+            // 2. Verificar y descontar el nuevo stock (sólo si no está cancelado)
+            if (pedido.estado != EstadoPedido.CANCELADO) {
+                pedido.lineas.forEach { linea ->
+                    val pEnt = productDao.getProductById(linea.producto.id) ?: throw IllegalStateException("Producto no encontrado")
+                    if (pEnt.stockActual < linea.cantidad) {
+                        throw IllegalStateException("Stock insuficiente para ${pEnt.descripcion}. Quedan ${pEnt.stockActual} disponibles.")
+                    }
+                    productDao.updateProduct(pEnt.copy(stockActual = pEnt.stockActual - linea.cantidad))
+                }
+            }
+
+            val entity = OrderEntity(
+                id = pedido.id,
+                numeroPedido = pedido.numeroPedido,
+                clientId = pedido.cliente.id,
+                fechaCreacion = pedido.fechaCreacion.toString(),
+                fechaEntregaEstimada = pedido.fechaEntregaEstimada.toString(),
+                estado = pedido.estado.name,
+                observaciones = pedido.observaciones,
+                comprobanteUri = pedido.comprobanteUri
             )
-            orderDao.insertOrderLine(lineEntity)
+            orderDao.updateOrder(entity)
+            
+            // 3. Sincronizar líneas: borramos las anteriores y guardamos las nuevas
+            orderDao.deleteOrderLines(pedido.id)
+            pedido.lineas.forEach { linea ->
+                val lineEntity = OrderLineEntity(
+                    orderId = pedido.id,
+                    productId = linea.producto.id,
+                    cantidad = linea.cantidad,
+                    precioUnitario = linea.precioUnitario,
+                    subtotal = linea.subtotal
+                )
+                orderDao.insertOrderLine(lineEntity)
+            }
         }
     }
 
     suspend fun deleteOrder(id: Int) {
-        orderDao.deleteOrderLines(id)
-        orderDao.deleteOrder(id)
+        db.withTransaction {
+            // Reponer stock de las líneas eliminadas
+            val lines = orderDao.getLinesForOrder(id)
+            lines.forEach { line ->
+                val pEnt = productDao.getProductById(line.productId)
+                if (pEnt != null) {
+                    productDao.updateProduct(pEnt.copy(stockActual = pEnt.stockActual + line.cantidad))
+                }
+            }
+            orderDao.deleteOrderLines(id)
+            orderDao.deleteOrder(id)
+        }
     }
     
     suspend fun syncOrdersToCloud(): Boolean {

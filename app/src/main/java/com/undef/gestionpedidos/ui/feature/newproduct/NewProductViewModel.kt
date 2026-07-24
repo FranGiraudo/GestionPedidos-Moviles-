@@ -16,6 +16,7 @@ data class NewProductUiState(
     val descripcion: String = "",
     val unidadMedida: String = "Unidad",
     val precioUnitario: String = "",
+    val stockActual: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
     val categorias: List<Categoria> = emptyList(),
@@ -25,6 +26,8 @@ data class NewProductUiState(
 class NewProductViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NewProductUiState())
     val uiState: StateFlow<NewProductUiState> = _uiState.asStateFlow()
+
+    private var editingProductId: Int? = null
 
     init {
         loadCategorias()
@@ -37,6 +40,25 @@ class NewProductViewModel : ViewModel() {
                 _uiState.update { it.copy(categorias = categorias) }
             } catch (e: Exception) {
                 // Si falla la carga de categorías, se mantiene la lista vacía sin bloquear el formulario
+            }
+        }
+    }
+
+    fun loadProduct(id: Int) {
+        editingProductId = id
+        viewModelScope.launch {
+            val producto = ServiceLocator.productRepository.getProductById(id)
+            if (producto != null) {
+                _uiState.update { 
+                    it.copy(
+                        codigo = producto.codigo,
+                        descripcion = producto.descripcion,
+                        unidadMedida = producto.unidadMedida,
+                        precioUnitario = producto.precioUnitario.toString(),
+                        stockActual = producto.stockActual.toString(),
+                        categoriaSeleccionadaId = producto.categoryId
+                    )
+                }
             }
         }
     }
@@ -61,6 +83,10 @@ class NewProductViewModel : ViewModel() {
         _uiState.update { it.copy(precioUnitario = newPrecio, error = null) }
     }
 
+    fun onStockActualChange(newStock: String) {
+        _uiState.update { it.copy(stockActual = newStock, error = null) }
+    }
+
     fun saveProduct(onSuccess: () -> Unit) {
         val state = _uiState.value
 
@@ -75,21 +101,31 @@ class NewProductViewModel : ViewModel() {
             return
         }
 
+        val stock = if (state.stockActual.isBlank()) 0 else state.stockActual.toIntOrNull()
+        if (stock == null || stock < 0) {
+            _uiState.update { it.copy(error = "El stock debe ser un número válido (0 o mayor).") }
+            return
+        }
+
         _uiState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
             try {
                 val producto = Producto(
-                    id = 0,
+                    id = editingProductId ?: 0,
                     codigo = state.codigo,
                     descripcion = state.descripcion,
                     unidadMedida = state.unidadMedida,
                     precioUnitario = precio,
-                    stockActual = 0,
+                    stockActual = stock,
                     activo = true,
                     categoryId = state.categoriaSeleccionadaId
                 )
-                ServiceLocator.productRepository.addProduct(producto)
+                if (editingProductId != null) {
+                    ServiceLocator.productRepository.updateProduct(producto)
+                } else {
+                    ServiceLocator.productRepository.addProduct(producto)
+                }
                 onSuccess()
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = "Error al guardar el producto") }

@@ -20,7 +20,8 @@ data class OrderDetailUiState(
     val editableLines: List<LineaPedido> = emptyList(),
     val availableProducts: List<Producto> = emptyList(),
     val isLoading: Boolean = true,
-    val error: String? = null
+    val error: String? = null,
+    val isSaved: Boolean = false
 )
 
 class OrderDetailViewModel(private val orderId: Int) : ViewModel() {
@@ -87,6 +88,10 @@ class OrderDetailViewModel(private val orderId: Int) : ViewModel() {
         }
     }
 
+    fun clearError() {
+        _uiState.value = _uiState.value.copy(error = null)
+    }
+
     fun saveOrderChanges(newStatus: EstadoPedido) {
         val currentOrder = _uiState.value.order ?: return
         val currentLines = _uiState.value.editableLines
@@ -96,10 +101,13 @@ class OrderDetailViewModel(private val orderId: Int) : ViewModel() {
             lineas = currentLines
         )
         
-        _uiState.value = _uiState.value.copy(order = updatedOrder)
-        
         viewModelScope.launch {
-            ServiceLocator.orderRepository.updateOrder(updatedOrder)
+            try {
+                ServiceLocator.orderRepository.updateOrder(updatedOrder)
+                _uiState.value = _uiState.value.copy(order = updatedOrder, isSaved = true)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message ?: "Ocurrió un error al guardar")
+            }
         }
     }
 

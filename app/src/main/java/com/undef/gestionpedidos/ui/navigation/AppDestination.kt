@@ -12,6 +12,11 @@ sealed class AppDestination(val route: String) {
     object NewClient : AppDestination("new_client")
     object Profile : AppDestination("profile")
     object Settings : AppDestination("settings")
+    object Products : AppDestination("products")
+    object NewProduct : AppDestination("new_product")
+    object EditProduct : AppDestination("edit_product/{productId}") {
+        fun createRoute(productId: Int) = "edit_product/$productId"
+    }
     object OrderDetail : AppDestination("order_detail/{orderId}") {
         fun createRoute(orderId: Int) = "order_detail/$orderId"
     }

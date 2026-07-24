@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,14 +42,13 @@ import com.undef.gestionpedidos.ui.feature.dashboard.DashboardScreen
 import com.undef.gestionpedidos.ui.feature.newclient.NewClientScreen
 import com.undef.gestionpedidos.ui.feature.neworder.NewOrderScreen
 import com.undef.gestionpedidos.ui.feature.newproduct.NewProductScreen
+import com.undef.gestionpedidos.ui.feature.products.ProductsScreen
 import com.undef.gestionpedidos.ui.feature.orderdetail.OrderDetailScreen
 import com.undef.gestionpedidos.ui.feature.orders.OrdersScreen
 import com.undef.gestionpedidos.ui.feature.profile.ProfileScreen
 import com.undef.gestionpedidos.ui.feature.settings.SettingsScreen
 import com.undef.gestionpedidos.ui.feature.statistics.StatisticsScreen
-import com.undef.gestionpedidos.ui.theme.BottomNavBg
-import com.undef.gestionpedidos.ui.theme.BottomNavIconActive
-import com.undef.gestionpedidos.ui.theme.BottomNavSelected
+
 
 @Composable
 fun AppNavHost() {
@@ -60,6 +60,7 @@ fun AppNavHost() {
         Triple(AppDestination.Dashboard.route, "Inicio", Icons.Default.Home),
         Triple(AppDestination.Orders.route, "Pedidos", Icons.Default.List),
         Triple(AppDestination.Clients.route, "Clientes", Icons.Default.Face),
+        Triple(AppDestination.Products.route, "Productos", Icons.Default.ShoppingCart),
         Triple(AppDestination.Statistics.route, "Datos", Icons.Default.Star)
     )
 
@@ -70,7 +71,7 @@ fun AppNavHost() {
         bottomBar = {
             if (showBottomBar) {
                 Surface(
-                    color = BottomNavBg,
+                    color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(32.dp),
                     modifier = Modifier.padding(16.dp).fillMaxWidth(),
                     shadowElevation = 8.dp
@@ -83,7 +84,7 @@ fun AppNavHost() {
                         bottomNavItems.forEach { (route, title, icon) ->
                             val isSelected = currentRoute == route
                             Surface(
-                                color = if (isSelected) BottomNavSelected else Color.Transparent,
+                                color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
                                 shape = RoundedCornerShape(16.dp),
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(16.dp))
@@ -102,13 +103,13 @@ fun AppNavHost() {
                                     Icon(
                                         imageVector = icon, 
                                         contentDescription = title,
-                                        tint = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant
+                                        tint = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = title, 
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = if (isSelected) BottomNavIconActive else MaterialTheme.colorScheme.onSurfaceVariant
+                                        color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -162,7 +163,7 @@ fun AppNavHost() {
                 DashboardScreen(
                     onNavigateToNewOrder = { navController.navigate(AppDestination.NewOrder.route) },
                     onNavigateToNewClient = { navController.navigate(AppDestination.NewClient.route) },
-                    onNavigateToNewProduct = { navController.navigate("new_product") },
+                    onNavigateToNewProduct = { navController.navigate(AppDestination.Products.route) },
                     onNavigateToOrderDetail = { orderId -> navController.navigate(AppDestination.OrderDetail.createRoute(orderId)) },
                     onNavigateToProfile = { navController.navigate(AppDestination.Profile.route) }
                 )
@@ -199,8 +200,23 @@ fun AppNavHost() {
                 NewClientScreen(onNavigateBack = { navController.popBackStack() }, clientId = clientId)
             }
 
-            composable("new_product") {
+            composable(AppDestination.Products.route) {
+                ProductsScreen(
+                    onNavigateToNewProduct = { navController.navigate(AppDestination.NewProduct.route) },
+                    onNavigateToEditProduct = { productId -> navController.navigate(AppDestination.EditProduct.createRoute(productId)) }
+                )
+            }
+
+            composable(AppDestination.NewProduct.route) {
                 NewProductScreen(onNavigateBack = { navController.popBackStack() })
+            }
+
+            composable(
+                route = AppDestination.EditProduct.route,
+                arguments = listOf(navArgument("productId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val productId = backStackEntry.arguments?.getInt("productId") ?: 0
+                NewProductScreen(onNavigateBack = { navController.popBackStack() }, productId = productId)
             }
 
             composable(AppDestination.Profile.route) {

@@ -100,13 +100,84 @@ object ServiceLocator {
         }
     }
 
+    private val MIGRATION_6_7 = object : Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Migrar orders
+            db.execSQL("""
+                CREATE TABLE IF NOT EXISTS orders_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    numeroPedido TEXT NOT NULL,
+                    clientId INTEGER NOT NULL,
+                    fechaCreacion TEXT NOT NULL,
+                    fechaEntregaEstimada TEXT NOT NULL,
+                    estado TEXT NOT NULL,
+                    observaciones TEXT NOT NULL,
+                    comprobanteUri TEXT,
+                    FOREIGN KEY(clientId) REFERENCES clients(id) ON UPDATE NO ACTION ON DELETE RESTRICT
+                )
+            """.trimIndent())
+            db.execSQL("""
+                INSERT INTO orders_new (id, numeroPedido, clientId, fechaCreacion, fechaEntregaEstimada, estado, observaciones, comprobanteUri)
+                SELECT id, numeroPedido, clientId, fechaCreacion, fechaEntregaEstimada, estado, observaciones, comprobanteUri FROM orders
+            """.trimIndent())
+            db.execSQL("DROP TABLE orders")
+            db.execSQL("ALTER TABLE orders_new RENAME TO orders")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_orders_clientId ON orders(clientId)")
+
+            // Migrar order_lines
+            db.execSQL("""
+                CREATE TABLE IF NOT EXISTS order_lines_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    orderId INTEGER NOT NULL,
+                    productId INTEGER NOT NULL,
+                    cantidad INTEGER NOT NULL,
+                    precioUnitario REAL NOT NULL,
+                    subtotal REAL NOT NULL,
+                    FOREIGN KEY(orderId) REFERENCES orders(id) ON UPDATE NO ACTION ON DELETE CASCADE,
+                    FOREIGN KEY(productId) REFERENCES products(id) ON UPDATE NO ACTION ON DELETE RESTRICT
+                )
+            """.trimIndent())
+            db.execSQL("""
+                INSERT INTO order_lines_new (id, orderId, productId, cantidad, precioUnitario, subtotal)
+                SELECT id, orderId, productId, cantidad, precioUnitario, subtotal FROM order_lines
+            """.trimIndent())
+            db.execSQL("DROP TABLE order_lines")
+            db.execSQL("ALTER TABLE order_lines_new RENAME TO order_lines")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_order_lines_orderId ON order_lines(orderId)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_order_lines_productId ON order_lines(productId)")
+
+            // Migrar products
+            db.execSQL("""
+                CREATE TABLE IF NOT EXISTS products_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    nombre TEXT NOT NULL,
+                    codigo TEXT NOT NULL,
+                    descripcion TEXT,
+                    categoryId INTEGER,
+                    unidadMedida TEXT NOT NULL,
+                    precioUnitario REAL NOT NULL,
+                    stockActual INTEGER NOT NULL,
+                    activo INTEGER NOT NULL,
+                    FOREIGN KEY(categoryId) REFERENCES categories(id) ON UPDATE NO ACTION ON DELETE SET NULL
+                )
+            """.trimIndent())
+            db.execSQL("""
+                INSERT INTO products_new (id, nombre, codigo, descripcion, categoryId, unidadMedida, precioUnitario, stockActual, activo)
+                SELECT id, nombre, codigo, descripcion, categoryId, unidadMedida, precioUnitario, stockActual, activo FROM products
+            """.trimIndent())
+            db.execSQL("DROP TABLE products")
+            db.execSQL("ALTER TABLE products_new RENAME TO products")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_products_categoryId ON products(categoryId)")
+        }
+    }
+
     fun init(context: Context) {
         database = Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
             "gestion_pedidos.db"
         )
-        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
         .build()
 
         val retrofit = Retrofit.Builder()
@@ -120,7 +191,7 @@ object ServiceLocator {
         val db = database!!
         clientRepository = ClientRepository(db.clientDao(), apiService!!)
         productRepository = ProductRepository(db.productDao())
-        orderRepository = OrderRepository(db.orderDao(), db.clientDao(), db.productDao())
+        orderRepository = OrderRepository(db, db.orderDao(), db.clientDao(), db.productDao())
         financeRepository = FinanceRepository(apiService!!)
         categoryRepository = CategoryRepository(db.categoryDao(), supabaseApiService)
         userRepository = UserRepository(db.userDao())

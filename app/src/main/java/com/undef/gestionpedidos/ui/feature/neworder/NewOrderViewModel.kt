@@ -26,7 +26,9 @@ data class NewOrderUiState(
     val selectedProduct: Producto? = null,
     val quantityText: String = "1",
     val orderLines: List<LineaPedido> = emptyList(),
-    val total: Double = 0.0
+    val total: Double = 0.0,
+    val error: String? = null,
+    val isSaved: Boolean = false
 )
 
 class NewOrderViewModel : ViewModel() {
@@ -119,25 +121,34 @@ class NewOrderViewModel : ViewModel() {
         _uiState.update { it.copy(orderLines = updatedLines, total = newTotal) }
     }
 
-    fun saveOrder(): Boolean {
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
+    }
+
+    fun saveOrder() {
         val state = _uiState.value
         if (state.selectedClient == null || state.orderLines.isEmpty()) {
-            return false
+            _uiState.update { it.copy(error = "Faltan datos para crear el pedido.") }
+            return
         }
         
         viewModelScope.launch {
-            val order = Pedido(
-                id = 0,
-                numeroPedido = "PED-${System.currentTimeMillis().toString().takeLast(5)}",
-                cliente = state.selectedClient,
-                fechaCreacion = LocalDate.now(),
-                fechaEntregaEstimada = LocalDate.now().plusDays(1),
-                estado = EstadoPedido.BORRADOR,
-                lineas = state.orderLines,
-                observaciones = state.observaciones
-            )
-            ServiceLocator.orderRepository.saveOrder(order)
+            try {
+                val order = Pedido(
+                    id = 0,
+                    numeroPedido = "PED-${System.currentTimeMillis().toString().takeLast(5)}",
+                    cliente = state.selectedClient,
+                    fechaCreacion = LocalDate.now(),
+                    fechaEntregaEstimada = LocalDate.now().plusDays(1),
+                    estado = EstadoPedido.BORRADOR,
+                    lineas = state.orderLines,
+                    observaciones = state.observaciones
+                )
+                ServiceLocator.orderRepository.saveOrder(order)
+                _uiState.update { it.copy(isSaved = true) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message ?: "Ocurrió un error al guardar") }
+            }
         }
-        return true
     }
 }

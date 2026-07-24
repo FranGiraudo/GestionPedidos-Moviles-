@@ -7,8 +7,8 @@ import java.security.MessageDigest
 
 class UserRepository(private val userDao: UserDao) {
 
-    private fun hashPassword(password: String): String {
-        val bytes = MessageDigest.getInstance("SHA-256").digest(password.toByteArray())
+    private fun hashPassword(password: String, email: String): String {
+        val bytes = MessageDigest.getInstance("SHA-256").digest((password + email).toByteArray())
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
@@ -19,7 +19,7 @@ class UserRepository(private val userDao: UserDao) {
         }
         val entity = UserEntity(
             email = email,
-            passwordHash = hashPassword(password),
+            passwordHash = hashPassword(password, email),
             fullName = fullName,
             phone = phone
         )
@@ -33,7 +33,7 @@ class UserRepository(private val userDao: UserDao) {
 
     suspend fun login(email: String, password: String): Usuario? {
         val entity = userDao.getUserByEmail(email) ?: return null
-        val hashedInput = hashPassword(password)
+        val hashedInput = hashPassword(password, email)
         if (entity.passwordHash != hashedInput || !entity.isActive) {
             return null
         }

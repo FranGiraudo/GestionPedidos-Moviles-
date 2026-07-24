@@ -90,6 +90,29 @@ class ProductRepository(private val productDao: ProductDao) {
         )
         productDao.insertProduct(entity)
     }
+
+    suspend fun updateProduct(producto: Producto) {
+        val entity = ProductEntity(
+            id = producto.id,
+            codigo = producto.codigo,
+            descripcion = producto.descripcion,
+            unidadMedida = producto.unidadMedida,
+            precioUnitario = producto.precioUnitario,
+            stockActual = producto.stockActual,
+            nombre = producto.codigo,
+            categoryId = producto.categoryId,
+            activo = producto.activo
+        )
+        productDao.updateProduct(entity)
+    }
+
+    suspend fun deactivateProduct(id: Int) {
+        productDao.deactivateProduct(id)
+    }
+
+    suspend fun activateProduct(id: Int) {
+        productDao.activateProduct(id)
+    }
 }
 
 class FinanceRepository(private val apiService: ApiService) {

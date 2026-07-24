@@ -16,8 +16,8 @@ import com.undef.gestionpedidos.data.local.entity.UserEntity
 
 @Database(
     entities = [ClientEntity::class, ProductEntity::class, OrderEntity::class, OrderLineEntity::class, CategoryEntity::class, UserEntity::class],
-    version = 6,
-    exportSchema = false
+    version = 7,
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun clientDao(): ClientDao
